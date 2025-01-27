@@ -2,11 +2,7 @@ name: "Terraform Deploy"
 on:
   push:
     branches: ["main"]
-  pull_request:
-
-permissions:
-  contents: read
-
+    
 jobs:
   terraform:
     name: "Terraform"
@@ -15,7 +11,7 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Install AWS CLI
         run: |
           sudo apt-get update
