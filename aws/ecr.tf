@@ -1,18 +1,11 @@
-data "aws_ecr_repository" "existing_repo" {
-  name = "printrevo-${var.environment}-repo"
-}
-
 resource "aws_ecr_repository" "private_repo" {
-  count = length(data.aws_ecr_repository.existing_repo.id) > 0 ? 0 : 1
-
   name = "printrevo-${var.environment}-repo"
-  # allows deletion of the repository even if it contains images
-  force_delete = false
+  force_delete = true  # Optional: allows deletion of the repository even if it contains images
 
   image_scanning_configuration {
     scan_on_push = true
   }
-
+  
   encryption_configuration {
     encryption_type = "AES256"
   }
@@ -23,7 +16,7 @@ resource "aws_ecr_repository" "private_repo" {
   }
 
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = false  # Set to true if you want to prevent accidental deletion
   }
 }
 
