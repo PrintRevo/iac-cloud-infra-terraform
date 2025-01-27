@@ -4,7 +4,7 @@
 cd ../
 
 # Initialize Terraform
-terraform init
+terraform init 
 
 # Apply the Terraform configuration
 terraform apply -auto-approve
