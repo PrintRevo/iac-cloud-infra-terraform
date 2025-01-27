@@ -1,30 +1,15 @@
-resource "aws_db_instance" "postgres" {
-  allocated_storage    = 20
-  storage_type         = "gp2"
-  engine               = "postgres"
-  engine_version       = "12.5"
-  instance_class       = var.rds_instance_class
-  username             = var.rds_username
-  password             = var.rds_password
-  parameter_group_name = "default.postgres12"
-  skip_final_snapshot  = true
-  publicly_accessible  = true
-
-}
-
 resource "aws_db_subnet_group" "postgres" {
-  name       = "my-postgres-subnet-group"
-  subnet_ids = [aws_subnet.public.id]
+  name       = "printrevo_core_${var.environment}-svc-subnet-group"
+  subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id]
 }
 
-resource "aws_db_instance" "postgresql" {
-  allocated_storage = 20
-  #  identifier             = "ellobae-core"
+resource "aws_db_instance" "postgres" {
+  allocated_storage      = 20
   identifier_prefix      = var.environment
   engine                 = "postgres"
   engine_version         = "15.7"
   instance_class         = "db.t3.micro"
-  db_name                = "ellobae_scv"
+  db_name                = "printrevo-core-${var.environment}-svc"
   username               = var.rds_username
   password               = var.rds_password
   parameter_group_name   = "default.postgres15"
@@ -32,4 +17,9 @@ resource "aws_db_instance" "postgresql" {
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.ecs.id]
   db_subnet_group_name   = aws_db_subnet_group.postgres.name
+
+  tags = {
+    Name        = "${var.environment}-ecs-task-execution-role"
+    Environment = var.environment
+  }
 }

@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.s3_bucket_name
+  bucket = "printrevo-${var.environment}-bucket"
   tags = {
     Environment = var.environment
   }

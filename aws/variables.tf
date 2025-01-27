@@ -10,19 +10,6 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
-variable "s3_bucket_name" {
-  description = "Name of the S3 bucket"
-  type        = string
-  default     = "my-s3-bucket"
-}
-
-
-variable "ecs_cluster_name" {
-  description = "Name of the ECS cluster"
-  type        = string
-  default     = "my-ecs-cluster"
-}
-
 variable "redis_node_type" {
   description = "Node type for ElastiCache Redis"
   type        = string
