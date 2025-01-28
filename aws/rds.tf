@@ -1,6 +1,10 @@
 resource "aws_db_subnet_group" "postgres" {
   name       = "printrevo_core_${var.environment}-svc-subnet-group"
   subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Declare list of database stacks for each mircoservices
@@ -22,5 +26,9 @@ resource "aws_db_instance" "postgres" {
   tags = {
     Name        = "${var.environment}-ecs-task-execution-role"
     Environment = var.environment
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }

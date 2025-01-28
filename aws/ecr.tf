@@ -16,7 +16,7 @@ resource "aws_ecr_repository" "private_repo" {
   }
 
   lifecycle {
-    prevent_destroy = false  # Set to true if you want to prevent accidental deletion
+    prevent_destroy = true 
   }
 }
 
