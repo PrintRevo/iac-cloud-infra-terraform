@@ -3,6 +3,7 @@ resource "aws_db_subnet_group" "postgres" {
   subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id]
 }
 
+# Declare list of database stacks for each mircoservices
 resource "aws_db_instance" "postgres" {
   allocated_storage      = 20
   identifier_prefix      = var.environment
