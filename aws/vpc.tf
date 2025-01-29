@@ -4,6 +4,10 @@ resource "aws_vpc" "main" {
   tags = {
     Name = "printreveo-${var.environment}-vpc"
   }
+
+  lifecycle {
+    ignore_changes = [ tags.Name ]
+  }
 }
 
 resource "aws_subnet" "public_1" {
@@ -16,6 +20,10 @@ resource "aws_subnet" "public_1" {
   tags = {
     Name        = "${var.environment}-public-subnet"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ tags.Name ]
   }
 }
 
@@ -30,6 +38,10 @@ resource "aws_subnet" "public_2" {
     Name        = "${var.environment}-public-subnet-2"
     Environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = [ tags.Name ]
+  }
 }
 
 resource "aws_internet_gateway" "gw" {
@@ -38,6 +50,10 @@ resource "aws_internet_gateway" "gw" {
   tags = {
     Name        = "${var.environment}-main-gw"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ tags.Name ]
   }
 }
 
@@ -52,6 +68,10 @@ resource "aws_route_table" "public" {
   tags = {
     Name        = "${var.environment}-public-route-table"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ tags.Name ]
   }
 }
 
@@ -92,5 +112,9 @@ resource "aws_security_group" "ecs" {
   tags = {
     Name        = "${var.environment}-ecs-security-group"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ name ]
   }
 }
