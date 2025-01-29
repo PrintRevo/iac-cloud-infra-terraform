@@ -4,6 +4,10 @@ resource "aws_ecs_cluster" "cluster" {
     Name        = "printrevo-${var.environment}-cluster"
     Environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = [ name ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
@@ -29,6 +33,10 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   tags = {
     Name        = "${var.environment}-ecs-task-execution-role"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ name ]
   }
 }
 
@@ -80,6 +88,10 @@ resource "aws_ecs_task_definition" "ecs_task" {
       }
     }
   ])
+
+  lifecycle {
+    ignore_changes = [ family ]
+  }
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -97,5 +109,9 @@ resource "aws_ecs_service" "ecs_service" {
   tags = {
     Name        = "${var.environment}-printrevo-core-svc"
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [ name ]
   }
 }

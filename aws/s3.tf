@@ -3,4 +3,8 @@ resource "aws_s3_bucket" "bucket" {
   tags = {
     Environment = var.environment
   }
+
+  lifecycle {
+    ignore_changes = [ bucket ]
+  }
 }
