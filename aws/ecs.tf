@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   container_definitions = jsonencode([
     {
       name      = "${var.environment}-coresvc-container"
-      image     = "${data.aws_ecr_repository.existing_private.repository_url}:latest"
+      image     = "${aws_ecr_repository.gobackend_api_svc.repository_url}:latest"
       essential = true
       # environment = [
       #   {

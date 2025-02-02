@@ -1,16 +1,21 @@
-data "aws_ecr_repository" "existing_private" {
-  name = "printrevo-${var.environment}-repo"
-}
-
-resource "aws_ecr_repository" "private_repo" {
-  count = try(data.aws_ecr_repository.existing_private.id, null) != null ? 0 : 1
-
+resource "aws_ecr_repository" "gobackend_api_svc" {
   name         = "printrevo-${var.environment}-repo"
-  force_delete = true # Optional: allows deletion of the repository even if it contains images
+  force_delete = false
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      image_tag_mutability,
+      image_scanning_configuration
+    ]
+    prevent_destroy = true
+  }
 
   image_scanning_configuration {
     scan_on_push = true
   }
+
+  image_tag_mutability = "MUTABLE" 
 
   encryption_configuration {
     encryption_type = "AES256"
@@ -20,9 +25,47 @@ resource "aws_ecr_repository" "private_repo" {
     Name        = "${var.environment}-printrevo-core-svc-repo"
     Environment = var.environment
   }
+}
 
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes  = [name]
-  }
+resource "aws_ecr_repository_policy" "ecr-repo-policy" {
+  repository = aws_ecr_repository.gobackend_api_svc.name
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowPull"
+        Effect = "Allow"
+        Principal = {
+          AWS = "*"  # Replace with specific ARNs for production use
+        }
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_ecr_lifecycle_policy" "repo-lifecycle" {
+  repository = aws_ecr_repository.gobackend_api_svc.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 30 images"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 30
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
 }
