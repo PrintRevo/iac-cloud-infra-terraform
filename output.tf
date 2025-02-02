@@ -27,3 +27,7 @@
 #   depends_on = [module.aws_resources]
 #   value      = aws_sqs_queue.event_queue.id != "" ? aws_sqs_queue.event_queue.id : data.aws_sqs_queue.existing_queue.id
 # }
+
+output "bucket_id" {
+  value = try(aws_s3_bucket.bucket[0].id, data.aws_s3_bucket.existing_bucket[0].id)
+}
