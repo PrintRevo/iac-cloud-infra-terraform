@@ -6,7 +6,7 @@ resource "aws_ecs_cluster" "cluster" {
   }
 
   lifecycle {
-    ignore_changes = [ name ]
+    ignore_changes = [name]
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = "256"
   memory                   = "512"
   depends_on               = [aws_elasticache_cluster.redis]
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = data.aws_iam_role.existing_execution_role.arn
   container_definitions = jsonencode([
     {
       name      = "${var.environment}-coresvc-container"
@@ -59,7 +59,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   ])
 
   lifecycle {
-    ignore_changes = [ family ]
+    ignore_changes = [family]
   }
 }
 
@@ -81,6 +81,6 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   lifecycle {
-    ignore_changes = [ name ]
+    ignore_changes = [name]
   }
 }
