@@ -3,7 +3,7 @@ data "aws_s3_bucket" "existing_bucket" {
   bucket = "printrevo-${var.environment}-bucket"
 }
 
-resource "aws_s3_bucket" "bucket" {
+resource "aws_s3_bucket" "core_bucket" {
   count  = length(data.aws_s3_bucket.existing_bucket) > 0 ? 0 : 1
   bucket = "printrevo-${var.environment}-bucket"
   tags = {

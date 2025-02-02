@@ -20,8 +20,3 @@ resource "aws_ecr_repository" "private_repo" {
     ignore_changes = [ name ]
   }
 }
-
-resource "aws_iam_role_policy_attachment" "ecr_access_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}

@@ -6,45 +6,9 @@ resource "aws_ecs_cluster" "cluster" {
   }
 
   lifecycle {
-    ignore_changes = [name]
+    ignore_changes = [ name ]
   }
 }
-
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-data "aws_iam_role" "existing_role" {
-  count = length(regexall("EntityAlreadyExists", try(aws_iam_role.ecs_task_execution_role[0].id, "not_exist"))) > 0 ? 0 : 1
-  name  = "${var.environment}-ecs-task-execution-role"
-}
-
-resource "aws_iam_role" "ecs_task_execution_role" {
-  count = length(regexall("EntityAlreadyExists", try(data.aws_iam_role.existing_role[0].id, "not_exist"))) > 0 ? 0 : 1
-  name  = "${var.environment}-ecs-task-execution-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-  tags = {
-    Name        = "${var.environment}-ecs-task-execution-role"
-    Environment = var.environment
-  }
-
-  lifecycle {
-    ignore_changes = [name]
-  }
-}
-
 
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -95,7 +59,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   ])
 
   lifecycle {
-    ignore_changes = [family]
+    ignore_changes = [ family ]
   }
 }
 
@@ -117,6 +81,6 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   lifecycle {
-    ignore_changes = [name]
+    ignore_changes = [ name ]
   }
 }
