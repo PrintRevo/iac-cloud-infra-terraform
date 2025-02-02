@@ -60,7 +60,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot  = true
 
   # Database configuration
-  db_name  = replace("printrevo_core_${var.environment}_svc", "-", "_")
+  db_name  = "printrevo_core_svc"
   username = var.rds_username
   password = var.rds_password
 
