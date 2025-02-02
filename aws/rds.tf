@@ -1,47 +1,95 @@
-# Check if the DB subnet group already exists
-data "aws_db_subnet_group" "existing_postgres" {
-  name = "printrevo_core_${var.environment}-svc-subnet-group"
-}
+# Security Group for RDS
+resource "aws_security_group" "rds" {
+  name        = "printrevo-${var.environment}-rds-sg"
+  description = "Security group for RDS instance"
+  vpc_id      = aws_vpc.main.id
 
-# Create the DB subnet group only if it does not exist
-resource "aws_db_subnet_group" "postgres" {
-  count = try(data.aws_db_subnet_group.existing_postgres.id, null) != null ? 0 : 1
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs.id]
+  }
 
-  name       = "printrevo_core_${var.environment}-svc-subnet-group"
-  subnet_ids = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "printrevo-${var.environment}-rds-sg"
+    Environment = var.environment
+  }
 
   lifecycle {
-    prevent_destroy = true
+    ignore_changes = [tags.Name]
   }
 }
 
-# Declare list of database stacks for each microservice
-resource "aws_db_instance" "postgres" {
-  allocated_storage      = 20
-  identifier_prefix      = var.environment
-  engine                 = "postgres"
-  engine_version         = "15.7"
-  instance_class         = "db.t3.micro"
-  db_name                = "printrevo-core-${var.environment}-svc"
-  username               = var.rds_username
-  password               = var.rds_password
-  parameter_group_name   = "default.postgres15"
-  publicly_accessible    = true
-  skip_final_snapshot    = true
-  vpc_security_group_ids = [aws_security_group.ecs.id]
-
-  # Use existing or newly created DB subnet group
-  db_subnet_group_name = coalesce(
-    try(aws_db_subnet_group.postgres[0].name, ""),
-    data.aws_db_subnet_group.existing_postgres.name
-  )
+# DB Subnet Group with better error handling
+resource "aws_db_subnet_group" "postgres" {
+  name_prefix = "printrevo-${var.environment}-"
+  subnet_ids  = [aws_subnet.public_1.id, aws_subnet.public_2.id]
 
   tags = {
-    Name        = "${var.environment}-ecs-task-execution-role"
+    Name        = "printrevo-${var.environment}-db-subnet-group"
+    Environment = var.environment
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes       = [tags.Name]
+  }
+}
+
+# RDS Instance
+resource "aws_db_instance" "postgres" {
+  identifier = "printrevo-${var.environment}-db"
+
+  # Engine configuration
+  engine         = "postgres"
+  engine_version = "15.7"
+  instance_class = "db.t3.micro"
+
+  # Storage configuration
+  allocated_storage     = 20
+  storage_type         = "gp2"
+  storage_encrypted    = true
+  skip_final_snapshot  = true
+
+  # Database configuration
+  db_name  = replace("printrevo_core_${var.environment}_svc", "-", "_")
+  username = var.rds_username
+  password = var.rds_password
+
+  # Network configuration
+  db_subnet_group_name   = aws_db_subnet_group.postgres.name
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  publicly_accessible    = true
+
+  # Maintenance configuration
+  auto_minor_version_upgrade = true
+  maintenance_window         = "Mon:03:00-Mon:04:00"
+  backup_window             = "02:00-03:00"
+  backup_retention_period   = 7
+
+  # Parameter group
+  parameter_group_name = "default.postgres15"
+
+  tags = {
+    Name        = "printrevo-${var.environment}-db"
     Environment = var.environment
   }
 
   lifecycle {
     prevent_destroy = true
+    ignore_changes  = [
+      password,
+      tags.Name,
+      maintenance_window,
+      backup_window
+    ]
   }
 }

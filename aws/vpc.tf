@@ -6,10 +6,11 @@ resource "aws_vpc" "main" {
   }
 
   lifecycle {
-    ignore_changes = [ tags.Name ]
+    ignore_changes = [tags.Name]
   }
 }
 
+# Public Subnet 1
 resource "aws_subnet" "public_1" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
@@ -23,10 +24,11 @@ resource "aws_subnet" "public_1" {
   }
 
   lifecycle {
-    ignore_changes = [ tags.Name ]
+    ignore_changes = [tags.Name]
   }
 }
 
+# Public Subnet 2
 resource "aws_subnet" "public_2" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
@@ -40,10 +42,11 @@ resource "aws_subnet" "public_2" {
   }
 
   lifecycle {
-    ignore_changes = [ tags.Name ]
+    ignore_changes = [tags.Name]
   }
 }
 
+# Internet Gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
@@ -53,10 +56,11 @@ resource "aws_internet_gateway" "gw" {
   }
 
   lifecycle {
-    ignore_changes = [ tags.Name ]
+    ignore_changes = [tags.Name]
   }
 }
 
+# Route Table
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -71,10 +75,11 @@ resource "aws_route_table" "public" {
   }
 
   lifecycle {
-    ignore_changes = [ tags.Name ]
+    ignore_changes = [tags.Name]
   }
 }
 
+# Route Table Associations
 resource "aws_route_table_association" "public_1" {
   subnet_id      = aws_subnet.public_1.id
   route_table_id = aws_route_table.public.id
@@ -85,6 +90,7 @@ resource "aws_route_table_association" "public_2" {
   route_table_id = aws_route_table.public.id
 }
 
+# Security Group
 resource "aws_security_group" "ecs" {
   vpc_id = aws_vpc.main.id
 
@@ -115,6 +121,6 @@ resource "aws_security_group" "ecs" {
   }
 
   lifecycle {
-    ignore_changes = [ name ]
+    ignore_changes = [name]
   }
 }
