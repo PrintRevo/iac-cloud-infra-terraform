@@ -54,6 +54,12 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Import AWS Services by Environment Tag
+        run: |
+          aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=dev --output json | jq -r '.ResourceTagMappingList[].ResourceARN' | while read -r arn; do
+            terraform import "$arn" "$arn"
+          done
+
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=${{ steps.ssm.outputs.parameters }}
 
