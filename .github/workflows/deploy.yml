@@ -51,8 +51,11 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check
 
+      - name: Terraform Validate
+        run: terraform validate
+
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=$DB_PASSWORD
+        run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=${{ steps.ssm.outputs.parameters }}
 
       - name: Set execute permission for the apply script
         run: chmod +x ./bin/terraform-apply.sh
