@@ -11,6 +11,7 @@ terraform {
   }
 }
 
+
 module "aws_resources" {
   source       = "./aws"
   rds_password = var.rds_password

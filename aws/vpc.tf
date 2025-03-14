@@ -15,11 +15,25 @@ resource "aws_vpc" "main" {
 }
 
 # Public Subnet 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_a" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.aws_region}a"
+  map_public_ip_on_launch = true
 
+  tags = {
+    Name        = "${var.environment}-public-subnet"
+    Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [tags.Name]
+  }
+}
+resource "aws_subnet" "public_b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "${var.aws_region}b"
   map_public_ip_on_launch = true
 
   tags = {
@@ -67,10 +81,9 @@ resource "aws_route_table" "public" {
 
 # Route Table Associations
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  subnet_id      = aws_subnet.public_a.id
   route_table_id = aws_route_table.public.id
 }
-
 
 
 # Security Group
