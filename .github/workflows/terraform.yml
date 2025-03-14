@@ -5,48 +5,53 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform:
     name: Terraform Deploy
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: "printrevo-terraform-state-bucket"
+      DYNAMODB_TABLE: "printrevo-terraform-lock-table"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Set up AWS Profile
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+      - name: Setup AWS Profile
         run: |
           mkdir -p ~/.aws
           echo "[printrevo-aws-profile]" > ~/.aws/credentials
-          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          echo "[default]" > ~/.aws/config
+          echo "region = $AWS_REGION" >> ~/.aws/config
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "1.5.0"
 
+      - name: Initialize Terraform Backend (S3)
+        run: terraform init
+
       - name: Retrieve environment variables from AWS Parameter Store
+        id: ssm
         run: |
           DB_PASSWORD=$(aws ssm get-parameter --name "rds_password" --with-decryption --query "Parameter.Value" --output text)
-          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
-        id: ssm
-
-      - name: Export environment variables
-        run: echo "DB_PASSWORD=${{ steps.ssm.outputs.parameters }}" >> $GITHUB_ENV
-
-      - name: Terraform Init
-        run: terraform init
+          echo "DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
+          echo "::set-output name=db_password::$DB_PASSWORD"
 
       - name: Terraform Format
         run: terraform fmt -check
@@ -58,11 +63,11 @@ jobs:
         run: chmod +x ./bin/terraform-import.sh
 
       - name: Import AWS Services by Environment Tag
-        run: ./bin/terraform-import.sh dev
+        run: ./bin/terraform-import.sh dev || echo "Import script failed but continuing..."
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=${{ steps.ssm.outputs.parameters }}
-  
+        run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=${{ steps.ssm.outputs.db_password }}
+
       - name: Set execute permission for the apply script
         run: chmod +x ./bin/terraform-apply.sh
 

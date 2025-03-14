@@ -28,7 +28,7 @@ for ARN in $RESOURCE_ARNS; do
   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
 
-  echo "resource: $RESOURCE_TYPE.$RESOURCE_ID..."
+  echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
 
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
@@ -50,9 +50,9 @@ for ARN in $RESOURCE_ARNS; do
     iam)
       TF_RESOURCE="aws_iam_role"
       ;;
-#     ec2)
-      # TF_RESOURCE="aws_instance"
-      # ;;
+    ec2)
+      TF_RESOURCE="aws_instance"
+      ;;
     vpc)
       TF_RESOURCE="aws_vpc"
       ;;
@@ -76,7 +76,6 @@ for ARN in $RESOURCE_ARNS; do
 
   echo "Checking if $TF_RESOURCE.$RESOURCE_ID already exists in Terraform state..."
 
-   # Check if resource exists in Terraform state
   if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
     continue
