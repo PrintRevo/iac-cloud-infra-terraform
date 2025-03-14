@@ -54,17 +54,17 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Set execute permission for the import script
+        run: chmod +x ./bin/terraform-import.sh
+
       - name: Import AWS Services by Environment Tag
-        run: |
-          aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=dev --output json | jq -r '.ResourceTagMappingList[].ResourceARN' | while read -r arn; do
-            terraform import "$arn" "$arn"
-          done
+        run: ./bin/terraform-import.sh dev
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=${{ steps.ssm.outputs.parameters }}
-
+  
       - name: Set execute permission for the apply script
         run: chmod +x ./bin/terraform-apply.sh
-  
+
       - name: Run Terraform Apply
         run: ./bin/terraform-apply.sh
