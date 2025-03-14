@@ -74,8 +74,21 @@ for ARN in $RESOURCE_ARNS; do
       ;;
   esac
 
+  echo "Checking if $TF_RESOURCE.$RESOURCE_ID already exists in Terraform state..."
+
+   # Check if resource exists in Terraform state
+  if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
+    echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
+    continue
+  fi
+
+
   echo "Importing $TF_RESOURCE.$RESOURCE_ID..."
-  terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"
+ if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
+    echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
+  else
+    echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
+  fi
 done
 
 echo "Terraform import completed successfully!"
