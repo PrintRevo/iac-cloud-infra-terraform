@@ -23,7 +23,7 @@ fi
 echo "Importing resources into Terraform..."
 
 # Loop through each existing ARN and import it into Terraform
-for ARN in $EXISTING_ARNS; do
+for ARN in $RESOURCE_ARNS; do
   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
