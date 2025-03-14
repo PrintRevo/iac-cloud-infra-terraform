@@ -46,6 +46,24 @@ for ARN in $RESOURCE_ARNS; do
     internet-gateway)
       TF_RESOURCE="aws_internet_gateway"
       ;;
+    ecs-cluster)
+      TF_RESOURCE="aws_ecs_cluster"
+      ;;
+    s3-bucket)
+      TF_RESOURCE="aws_s3_bucket"
+      ;;
+    sqs-queue)
+      TF_RESOURCE="aws_sqs_queue"
+      ;;
+    db-instance)
+      TF_RESOURCE="aws_db_instance"
+      ;;
+    ecr-repository)
+      TF_RESOURCE="aws_ecr_repository"
+      ;;
+    iam-role)
+      TF_RESOURCE="aws_iam_role"
+      ;;
     *)
       echo "Skipping unsupported resource type: $RESOURCE_TYPE"
       continue
