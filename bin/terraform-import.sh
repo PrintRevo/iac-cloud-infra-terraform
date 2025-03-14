@@ -50,9 +50,9 @@ for ARN in $RESOURCE_ARNS; do
     iam)
       TF_RESOURCE="aws_iam_role"
       ;;
-    ec2)
-      TF_RESOURCE="aws_instance"
-      ;;
+#     ec2)
+      # TF_RESOURCE="aws_instance"
+      # ;;
     vpc)
       TF_RESOURCE="aws_vpc"
       ;;
