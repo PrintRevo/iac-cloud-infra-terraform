@@ -34,7 +34,7 @@ for ARN in $RESOURCE_ARNS; do
   case $RESOURCE_TYPE in
 #     ecs)
       # TF_RESOURCE="aws_ecs_cluster"
-      ;;
+      # ;;
 #     s3)
       # TF_RESOURCE="aws_s3_bucket"
       # ;;
@@ -42,8 +42,8 @@ for ARN in $RESOURCE_ARNS; do
 #       TF_RESOURCE="aws_sqs_queue"
 #       ;;
 #     rds)
-      TF_RESOURCE="aws_db_instance"
-      ;;
+      # TF_RESOURCE="aws_db_instance"
+      # ;;
 #     ecr)
       # TF_RESOURCE="aws_ecr_repository"
       # ;;
