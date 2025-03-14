@@ -37,10 +37,9 @@ jobs:
           terraform_version: "1.5.0"
 
       - name: Retrieve environment variables from AWS Parameter Store
-        uses: aws-actions/aws-ssm-get-parameter@v1
-        with:
-          names: "rds_password"
-          with-decryption: true
+        run: |
+          DB_PASSWORD=$(aws ssm get-parameter --name "rds_password" --with-decryption --query "Parameter.Value" --output text)
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
         id: ssm
 
       - name: Export environment variables
