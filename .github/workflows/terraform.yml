@@ -68,7 +68,7 @@ jobs:
           terraform_version: "1.5.0"
 
       - name: Initialize Terraform Backend (S3)
-        run: terraform init
+        run: terraform init -reconfigure
 
       - name: Retrieve environment variables from AWS Parameter Store
         id: ssm
