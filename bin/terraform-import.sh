@@ -22,12 +22,32 @@ fi
 
 echo "Importing resources into Terraform..."
 
-# Loop through each resource ARN and import it into Terraform
-for ARN in $RESOURCE_ARNS; do
+# Loop through each existing ARN and import it into Terraform
+for ARN in $EXISTING_ARNS; do
   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
-  RESOURCE_ID=$(echo "$ARN" | awk -F'/' '{print $NF}')  # Extract resource ID
+  RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
+  RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
 
+  # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
+    ecs)
+      TF_RESOURCE="aws_ecs_cluster"
+      ;;
+    s3)
+      TF_RESOURCE="aws_s3_bucket"
+      ;;
+    sqs)
+      TF_RESOURCE="aws_sqs_queue"
+      ;;
+    rds)
+      TF_RESOURCE="aws_db_instance"
+      ;;
+    ecr)
+      TF_RESOURCE="aws_ecr_repository"
+      ;;
+    iam)
+      TF_RESOURCE="aws_iam_role"
+      ;;
     ec2)
       TF_RESOURCE="aws_instance"
       ;;
@@ -45,24 +65,6 @@ for ARN in $RESOURCE_ARNS; do
       ;;
     internet-gateway)
       TF_RESOURCE="aws_internet_gateway"
-      ;;
-    ecs-cluster)
-      TF_RESOURCE="aws_ecs_cluster"
-      ;;
-    s3-bucket)
-      TF_RESOURCE="aws_s3_bucket"
-      ;;
-    sqs-queue)
-      TF_RESOURCE="aws_sqs_queue"
-      ;;
-    db-instance)
-      TF_RESOURCE="aws_db_instance"
-      ;;
-    ecr-repository)
-      TF_RESOURCE="aws_ecr_repository"
-      ;;
-    iam-role)
-      TF_RESOURCE="aws_iam_role"
       ;;
     *)
       echo "Skipping unsupported resource type: $RESOURCE_TYPE"
