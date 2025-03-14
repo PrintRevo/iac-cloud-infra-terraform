@@ -69,10 +69,10 @@ jobs:
 
       - name: Initialize Terraform Backend (S3)
         run: terraform init \
-              -backend-config="bucket=printrevo-terraform-state-bucket" \
-              -backend-config="key=terraform.tfstate" \
-              -backend-config="region=${{ secrets.AWS_REGION }}" \
-              -backend-config="dynamodb_table=printrevo-terraform-lock-table"
+            -backend-config="bucket=printrevo-terraform-state-bucket" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="dynamodb_table=printrevo-terraform-lock-table"
 
       - name: Retrieve environment variables from AWS Parameter Store
         id: ssm
