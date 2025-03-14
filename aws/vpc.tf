@@ -7,6 +7,7 @@ resource "aws_vpc" "main" {
   
   tags = {
     Name = "printreveo-${var.environment}-vpc"
+    Environment = var.environment
   }
 
   lifecycle {

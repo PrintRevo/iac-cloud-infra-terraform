@@ -37,6 +37,12 @@ jobs:
         with:
           terraform_version: "1.5.0"
 
+      - name: Set execute permission for the script
+        run: chmod +x ./terraform.sh
+  
+      - name: Run Terraform script
+        run: ./terraform.sh
+
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
