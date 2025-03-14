@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "gobackend_api_svc" {
-  name         = "printrevo-${var.environment}-repo"
+resource "aws_ecr_repository" "sso-keycloak-template" {
+  name         = "sso-keycloak-template"
   force_delete = false
 
   lifecycle {
@@ -20,13 +20,12 @@ resource "aws_ecr_repository" "gobackend_api_svc" {
   }
 
   tags = {
-    Name        = "${var.environment}-printrevo-core-svc-repo"
     Environment = var.environment
   }
 }
 
 resource "aws_ecr_repository_policy" "ecr-repo-policy" {
-  repository = aws_ecr_repository.gobackend_api_svc.name
+  repository = aws_ecr_repository.sso-keycloak-template.name
   
   policy = jsonencode({
     Version = "2012-10-17"
@@ -48,7 +47,7 @@ resource "aws_ecr_repository_policy" "ecr-repo-policy" {
 }
 
 resource "aws_ecr_lifecycle_policy" "repo-lifecycle" {
-  repository = aws_ecr_repository.gobackend_api_svc.name
+  repository = aws_ecr_repository.sso-keycloak-template.name
 
   policy = jsonencode({
     rules = [
