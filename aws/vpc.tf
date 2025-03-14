@@ -14,8 +14,8 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Public Subnet 1
-resource "aws_subnet" "public_1" {
+# Public Subnet 
+resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "${var.aws_region}a"
@@ -24,24 +24,6 @@ resource "aws_subnet" "public_1" {
 
   tags = {
     Name        = "${var.environment}-public-subnet"
-    Environment = var.environment
-  }
-
-  lifecycle {
-    ignore_changes = [tags.Name]
-  }
-}
-
-# Public Subnet 2
-resource "aws_subnet" "public_2" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "${var.aws_region}b"
-
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name        = "${var.environment}-public-subnet-2"
     Environment = var.environment
   }
 
@@ -84,18 +66,15 @@ resource "aws_route_table" "public" {
 }
 
 # Route Table Associations
-resource "aws_route_table_association" "public_1" {
-  subnet_id      = aws_subnet.public_1.id
+resource "aws_route_table_association" "public" {
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table_association" "public_2" {
-  subnet_id      = aws_subnet.public_2.id
-  route_table_id = aws_route_table.public.id
-}
+
 
 # Security Group
-resource "aws_security_group" "ecs" {
+resource "aws_security_group" "public_access" {
   vpc_id = aws_vpc.main.id
 
   ingress {

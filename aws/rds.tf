@@ -1,47 +1,6 @@
-# Security Group for RDS
-resource "aws_security_group" "rds" {
-  name        = "printrevo-${var.environment}-rds-sg"
-  description = "Security group for RDS instance"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ecs.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name        = "printrevo-${var.environment}-rds-sg"
-    Environment = var.environment
-  }
-
-  lifecycle {
-    ignore_changes = [tags.Name]
-  }
-}
-
-# DB Subnet Group with better error handling
-resource "aws_db_subnet_group" "postgres" {
-  name_prefix = "printrevo-${var.environment}-"
-  subnet_ids  = [aws_subnet.public_1.id, aws_subnet.public_2.id]
-
-  tags = {
-    Name        = "printrevo-${var.environment}-db-subnet-group"
-    Environment = var.environment
-  }
-
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes       = [tags.Name]
-  }
+resource "aws_db_subnet_group" "postgres_subnet_group" {
+  name       = "rds-subnet-group"
+  subnet_ids = [aws_subnet.public.id]
 }
 
 # RDS Instance
@@ -65,8 +24,9 @@ resource "aws_db_instance" "postgres" {
   password = var.rds_password
 
   # Network configuration
-  db_subnet_group_name   = aws_db_subnet_group.postgres.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  vpc_security_group_ids = [aws_security_group.public_access.id]
+  db_subnet_group_name   = aws_db_subnet_group.postgres_subnet_group.name
+
   publicly_accessible    = true
 
   # Maintenance configuration
@@ -77,6 +37,7 @@ resource "aws_db_instance" "postgres" {
 
   # Parameter group
   parameter_group_name = "default.postgres15"
+
 
   tags = {
     Name        = "printrevo-${var.environment}-db"
@@ -93,3 +54,50 @@ resource "aws_db_instance" "postgres" {
     ]
   }
 }
+
+
+# Security Group for RDS
+# resource "aws_security_group" "rds" {
+#   name        = "printrevo-${var.environment}-rds-sg"
+#   description = "Security group for RDS instance"
+#   vpc_id      = aws_vpc.main.id
+
+#   ingress {
+#     from_port       = 5432
+#     to_port         = 5432
+#     protocol        = "tcp"
+#     security_groups = [aws_security_group.ecs.id]
+#   }
+
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   tags = {
+#     Name        = "printrevo-${var.environment}-rds-sg"
+#     Environment = var.environment
+#   }
+
+#   lifecycle {
+#     ignore_changes = [tags.Name]
+#   }
+# }
+
+# # DB Subnet Group with better error handling
+# resource "aws_db_subnet_group" "postgres" {
+#   name_prefix = "printrevo-${var.environment}-"
+#   subnet_ids  = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+
+#   tags = {
+#     Name        = "printrevo-${var.environment}-db-subnet-group"
+#     Environment = var.environment
+#   }
+
+#   lifecycle {
+#     create_before_destroy = true
+#     ignore_changes       = [tags.Name]
+#   }
+# }
