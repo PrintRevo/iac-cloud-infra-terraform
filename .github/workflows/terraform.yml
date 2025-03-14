@@ -68,7 +68,8 @@ jobs:
           terraform_version: "1.5.0"
 
       - name: Initialize Terraform Backend (S3)
-        run: terraform init \
+        run: |
+          terraform init \
             -backend-config="bucket=printrevo-terraform-state-bucket" \
             -backend-config="key=terraform.tfstate" \
             -backend-config="region=${{ secrets.AWS_REGION }}" \
