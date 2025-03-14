@@ -4,9 +4,7 @@ resource "aws_ecr_repository" "gobackend_api_svc" {
 
   lifecycle {
     ignore_changes = [
-      name,
-      image_tag_mutability,
-      image_scanning_configuration
+      name
     ]
     prevent_destroy = true
   }
