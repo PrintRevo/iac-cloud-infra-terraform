@@ -24,16 +24,20 @@ echo "Importing resources into Terraform..."
 
 # Loop through each existing ARN and import it into Terraform
 for ARN in $RESOURCE_ARNS; do
-  RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
-  RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
-  RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
+#   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
+#   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
+#   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
+
+  RESOURCE_TYPE=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+:([^\/]+).*/\1/')
+  RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
+  RESOURCE_ID=$(echo "$RESOURCE_PATH" | grep -oE '[^/]+$')
 
   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
 
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
-    ecs)
-      TF_RESOURCE="aws_ecs_cluster"
+    cluster)
+      TF_RESOURCE="cluster"
       ;;
     s3)
       TF_RESOURCE="aws_s3_bucket"
@@ -43,9 +47,6 @@ for ARN in $RESOURCE_ARNS; do
       ;;
     rds)
       TF_RESOURCE="aws_db_instance"
-      ;;
-    ecr)
-      TF_RESOURCE="aws_ecr_repository"
       ;;
     iam)
       TF_RESOURCE="aws_iam_role"
@@ -68,21 +69,22 @@ for ARN in $RESOURCE_ARNS; do
     internet-gateway)
       TF_RESOURCE="aws_internet_gateway"
       ;;
+    repository)
+      TF_RESOURCE="aws_ecr_repository"
+      ;;
     *)
       echo "Skipping unsupported resource type: $RESOURCE_TYPE"
       continue
       ;;
   esac
 
-  echo "Checking if $TF_RESOURCE.$RESOURCE_ID already exists in Terraform state..."
-
-  if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
+  if terraform state list | grep "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
     continue
   fi
 
 
-  echo "Importing $TF_RESOURCE.$RESOURCE_ID..."
+ echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
  if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
   else
