@@ -44,10 +44,7 @@ jobs:
         id: ssm
 
       - name: Export environment variables
-        run: echo "DB_PASSWORD=${{ steps.ssm.outputs.value }}" >> $GITHUB_ENV
-
-      - name: Use DB_PASSWORD in another step
-        run: echo "Using DB_PASSWORD: ${DB_PASSWORD}"
+        run: echo "DB_PASSWORD=${{ steps.ssm.outputs.parameters }}" >> $GITHUB_ENV
 
       - name: Terraform Init
         run: terraform init
