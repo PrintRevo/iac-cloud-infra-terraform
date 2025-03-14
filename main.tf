@@ -1,3 +1,26 @@
+# variable "environment" {
+#   default     = "development"
+#   type        = string
+#   description = "Environment"
+# }
+
+# variable "aws_region" {
+#   description = "AWS region"
+#   type        = string
+#   default     = "eu-central-1"
+# }
+
+# variable "aws_profile" {
+#   description = "AWS Profile"
+#   type        = string
+# }
+
+# variable "rds_password" {
+#   type        = string
+#   description = "RDS Password"
+# }
+
+
 terraform {
   required_providers {
     aws = {
@@ -18,11 +41,32 @@ terraform {
   }
 }
 
+module "main_vpc" {
+  source = "./aws/vpc"
+}
 
-module "aws_resources" {
-  source       = "./aws"
+module "ecr_repositories" {
+  source = "./aws/ecr"
+}
+
+module "ecs_cluster_and_services" {
+  source = "./aws/ecs"
+}
+
+module "iam_role_and_permission" {
+  source = "./aws/iam"
+}
+
+module "storage_services" {
+  source       = "./aws/storages"
   rds_password = var.rds_password
 }
+
+
+# module "aws_resources" {
+#   source       = "./aws"
+#   rds_password = var.rds_password
+# }
 
 # module "digitalocean_resources" {
 #   source = "./digitalocean"
