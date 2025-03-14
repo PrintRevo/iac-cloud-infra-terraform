@@ -49,12 +49,6 @@ jobs:
       - name: Use DB_PASSWORD in another step
         run: echo "Using DB_PASSWORD: ${DB_PASSWORD}"
 
-      - name: Set execute permission for Terraform script
-        run: chmod +x ./terraform.sh
-
-      - name: Run Terraform script
-        run: ./terraform.sh
-
       - name: Terraform Init
         run: terraform init
 
@@ -65,7 +59,7 @@ jobs:
         run: terraform plan -out=tfplan -var aws_profile=printrevo-aws-profile -var rds_password=$DB_PASSWORD
 
       - name: Set execute permission for the apply script
-        run: chmod +x ./bin/terraform.sh
+        run: chmod +x ./bin/terraform-apply.sh
   
       - name: Run Terraform Apply
-        run: ./bin/terraform.sh
+        run: ./bin/terraform-apply.sh
