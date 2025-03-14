@@ -28,6 +28,8 @@ for ARN in $EXISTING_ARNS; do
   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
 
+  echo "resource: $RESOURCE_TYPE.$RESOURCE_ID..."
+
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
     ecs)
