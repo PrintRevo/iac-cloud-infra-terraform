@@ -44,9 +44,9 @@ for ARN in $RESOURCE_ARNS; do
 #     rds)
       TF_RESOURCE="aws_db_instance"
       ;;
-    ecr)
-      TF_RESOURCE="aws_ecr_repository"
-      ;;
+#     ecr)
+      # TF_RESOURCE="aws_ecr_repository"
+      # ;;
     iam)
       TF_RESOURCE="aws_iam_role"
       ;;
