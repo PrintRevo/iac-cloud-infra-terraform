@@ -1,26 +1,3 @@
-# variable "environment" {
-#   default     = "development"
-#   type        = string
-#   description = "Environment"
-# }
-
-# variable "aws_region" {
-#   description = "AWS region"
-#   type        = string
-#   default     = "eu-central-1"
-# }
-
-# variable "aws_profile" {
-#   description = "AWS Profile"
-#   type        = string
-# }
-
-# variable "rds_password" {
-#   type        = string
-#   description = "RDS Password"
-# }
-
-
 terraform {
   required_providers {
     aws = {
@@ -42,32 +19,39 @@ terraform {
 }
 
 module "main_vpc" {
-  source = "./aws/vpc"
+  source      = "./aws/vpc"
+  environment = var.environment
+  aws_region  = var.aws_profile
 }
 
 module "ecr_repositories" {
-  source = "./aws/ecr"
+  source      = "./aws/ecr"
+  environment = var.environment
 }
 
 module "ecs_cluster_and_services" {
-  source = "./aws/ecs"
+  source      = "./aws/ecs"
+  environment = var.environment
 }
 
 module "iam_role_and_permission" {
-  source = "./aws/iam"
+  source      = "./aws/iam"
+  environment = var.environment
 }
 
 module "storage_services" {
-  source       = "./aws/storages"
-  rds_password = var.rds_password
+  source     = "./aws/storages"
+  depends_on = [module.main_vpc]
+  subnet_ids = [
+    module.main_vpc.public_subnet_a_id,
+    module.main_vpc.public_subnet_b_id
+  ]
+  environment        = var.environment
+  aws_profile        = var.aws_profile
+  rds_username       = var.rds_username
+  rds_password       = var.rds_password
+  aws_security_group_public_access_id = module.main_vpc.aws_security_group_public_access_id
+  redis_node_type    = var.redis_node_type
+  rds_instance_class = var.rds_instance_class
+  aws_region         = var.aws_region
 }
-
-
-# module "aws_resources" {
-#   source       = "./aws"
-#   rds_password = var.rds_password
-# }
-
-# module "digitalocean_resources" {
-#   source = "./digitalocean"
-# }

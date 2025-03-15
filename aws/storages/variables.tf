@@ -1,35 +1,44 @@
 variable "environment" {
-  default     = "dev"
   type        = string
   description = "Environment"
 }
-
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "eu-central-1"
+}
+
+variable "aws_profile" {
+  description = "AWS Profile"
+  type        = string
 }
 
 variable "redis_node_type" {
   description = "Node type for ElastiCache Redis"
   type        = string
-  default     = "cache.t2.micro"
 }
 
 variable "rds_instance_class" {
   description = "Instance class for RDS Postgres"
   type        = string
-  default     = "db.t2.micro"
 }
 
 variable "rds_username" {
   description = "Username for RDS Postgres"
   type        = string
-  default     = "admin"
 }
 
 variable "rds_password" {
   description = "Password for RDS Postgres"
   type        = string
   sensitive   = true
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the RDS subnet group"
+  type        = list(string)
+}
+
+variable "aws_security_group_public_access_id" {
+  description = "AWS Group Public IP"
+  type = string
 }

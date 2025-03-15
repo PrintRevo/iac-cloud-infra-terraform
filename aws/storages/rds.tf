@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "postgres_subnet_group" {
   name       = "rds-subnet-group"
-  subnet_ids = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+  subnet_ids = [var.subnet_ids[0], var.subnet_ids[1]]
 
   tags = {
     Name        = "printrevo-${var.environment}-db"
@@ -18,10 +18,10 @@ resource "aws_db_instance" "postgres" {
   instance_class = "db.t3.micro"
 
   # Storage configuration
-  allocated_storage     = 20
-  storage_type         = "gp2"
-  storage_encrypted    = true
-  skip_final_snapshot  = true
+  allocated_storage   = 20
+  storage_type        = "gp2"
+  storage_encrypted   = true
+  skip_final_snapshot = true
 
   # Database configuration
   db_name  = "printrevo_core_svc"
@@ -29,16 +29,16 @@ resource "aws_db_instance" "postgres" {
   password = var.rds_password
 
   # Network configuration
-  vpc_security_group_ids = [aws_security_group.public_access.id]
+  vpc_security_group_ids = [var.aws_security_group_public_access_id]
   db_subnet_group_name   = aws_db_subnet_group.postgres_subnet_group.name
 
-  publicly_accessible    = true
+  publicly_accessible = true
 
   # Maintenance configuration
   auto_minor_version_upgrade = true
   maintenance_window         = "Mon:03:00-Mon:04:00"
-  backup_window             = "02:00-03:00"
-  backup_retention_period   = 7
+  backup_window              = "02:00-03:00"
+  backup_retention_period    = 7
 
   # Parameter group
   parameter_group_name = "default.postgres15"
@@ -51,7 +51,7 @@ resource "aws_db_instance" "postgres" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes  = [
+    ignore_changes = [
       password,
       tags.Name,
       maintenance_window,
