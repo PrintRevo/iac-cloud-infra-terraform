@@ -22,11 +22,11 @@ terraform {
   }
 }
 
-module "main_vpc" {
-  source      = "./modules/aws/vpc"
-  environment = var.environment
-  aws_region  = var.aws_profile
-}
+# module "main_vpc" {
+#   source      = "./modules/aws/vpc"
+#   environment = var.environment
+#   aws_region  = var.aws_profile
+# }
 
 # module "ecr_repositories" {
 #   source      = "./modules/aws/ecr"
