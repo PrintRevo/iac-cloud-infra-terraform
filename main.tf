@@ -63,8 +63,8 @@ terraform {
 module "github_repositories" {
   source = "./modules/github"
 
-  organization     = "printrevo"
-  repositories_dir = "${path.module}/repository-definitions"
+  organization     = "PrintRevo"
+  repositories_dir = "./datas/repository-definitions"
 
   aws_profile = var.aws_profile
   aws_access_key_id = var.aws_access_key_id
