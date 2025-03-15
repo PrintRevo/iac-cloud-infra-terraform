@@ -19,28 +19,28 @@ terraform {
 }
 
 module "main_vpc" {
-  source      = "./aws/vpc"
+  source      = "./modules/aws/vpc"
   environment = var.environment
   aws_region  = var.aws_profile
 }
 
 module "ecr_repositories" {
-  source      = "./aws/ecr"
+  source      = "./modules/aws/ecr"
   environment = var.environment
 }
 
 module "ecs_cluster_and_services" {
-  source      = "./aws/ecs"
+  source      = "./modules/aws/ecs"
   environment = var.environment
 }
 
 module "iam_role_and_permission" {
-  source      = "./aws/iam"
+  source      = "./modules/aws/iam"
   environment = var.environment
 }
 
 module "storage_services" {
-  source     = "./aws/storages"
+  source     = "./modules/aws/storages"
   depends_on = [module.main_vpc]
   subnet_ids = [
     module.main_vpc.public_subnet_a_id,
