@@ -5,6 +5,8 @@ provider "aws" {
 
 provider "github" {
   # Token can be set via GITHUB_TOKEN environment variable
+  owner = var.organization
+  token = var.github_token
 }
 
 # provider "digitalocean" {

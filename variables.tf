@@ -10,6 +10,17 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
+variable "organization" {
+  description = "Organisation Name"
+  type = string
+  default = "PrintRevo"
+}
+
+variable "github_token" {
+  description = "Github Token"
+  type = string
+}
+
 variable "aws_profile" {
   description = "AWS Profile"
   type        = string
