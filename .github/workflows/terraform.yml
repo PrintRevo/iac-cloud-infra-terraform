@@ -38,20 +38,20 @@ jobs:
           echo "[default]" > ~/.aws/config
           echo "region = $AWS_REGION" >> ~/.aws/config
 
-      # - name: Ensure S3 bucket for Terraform state exists
-      #   run: |
-      #       BUCKET_NAME="printrevo-terraform-state"
-      #       REGION="eu-central-1"
-      #       if ! aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
-      #         if [ "$REGION" == "us-east-1" ]; then
-      #           aws s3api create-bucket --bucket "$BUCKET_NAME"
-      #         else
-      #           aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$REGION" --create-bucket-configuration LocationConstraint="$REGION"
-      #         fi
-      #         echo "S3 bucket $BUCKET_NAME created."
-      #       else
-      #         echo "S3 bucket $BUCKET_NAME already exists."
-      #       fi
+      - name: Ensure S3 bucket for Terraform state exists
+        run: |
+            BUCKET_NAME="printrevo-terraform-state"
+            REGION="eu-central-1"
+            if ! aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+              if [ "$REGION" == "us-east-1" ]; then
+                aws s3api create-bucket --bucket "$BUCKET_NAME"
+              else
+                aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$REGION" --create-bucket-configuration LocationConstraint="$REGION"
+              fi
+              echo "S3 bucket $BUCKET_NAME created."
+            else
+              echo "S3 bucket $BUCKET_NAME already exists."
+            fi
 
      
       - name: Setup Terraform
