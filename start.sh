@@ -3,7 +3,7 @@
 set -e  # Exit immediately if a command exits with a non-zero status
 
 AWS_REGION="eu-central-1"
-S3_BUCKET="printrevo-terraform-state-bucket"
+S3_BUCKET="printrevo-terraform-state"
 DYNAMODB_TABLE="printrevo-terraform-lock-table"
 AWS_PROFILE="default"
 

@@ -14,8 +14,8 @@ terraform {
     # }
   }
   backend "s3" {
-    bucket = "printrevo-terraform-state-bucket"
-    key    = "printrevo/infra/iac-terraform-repos.tfstate"
+    bucket = "printrevo-terraform-state"
+    key    = "iac-terraform-repos.tfstate"
     region = "eu-central-1"
   }
 }
