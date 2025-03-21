@@ -34,48 +34,48 @@ for ARN in $RESOURCE_ARNS; do
   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
 
   # Determine Terraform resource type dynamically
-  case $RESOURCE_TYPE in
-    cluster)
-      TF_RESOURCE="cluster"
-      ;;
-    s3)
-      TF_RESOURCE="aws_s3_bucket"
-      ;;
-    sqs)
-      TF_RESOURCE="aws_sqs_queue"
-      ;;
-    rds)
-      TF_RESOURCE="aws_db_instance"
-      ;;
-    iam)
-      TF_RESOURCE="aws_iam_role"
-      ;;
-    ec2)
-      TF_RESOURCE="aws_instance"
-      ;;
-    vpc)
-      TF_RESOURCE="aws_vpc"
-      ;;
-    subnet)
-      TF_RESOURCE="aws_subnet"
-      ;;
-    security-group)
-      TF_RESOURCE="aws_security_group"
-      ;;
-    route-table)
-      TF_RESOURCE="aws_route_table"
-      ;;
-    internet-gateway)
-      TF_RESOURCE="aws_internet_gateway"
-      ;;
-    repository)
-      TF_RESOURCE="aws_ecr_repository"
-      ;;
-    *)
-      echo "Skipping unsupported resource type: $RESOURCE_TYPE"
-      continue
-      ;;
-  esac
+  # case $RESOURCE_TYPE in
+  #   cluster)
+  #     TF_RESOURCE="cluster"
+  #     ;;
+  #   s3)
+  #     TF_RESOURCE="aws_s3_bucket"
+  #     ;;
+  #   sqs)
+  #     TF_RESOURCE="aws_sqs_queue"
+  #     ;;
+  #   rds)
+  #     TF_RESOURCE="aws_db_instance"
+  #     ;;
+  #   iam)
+  #     TF_RESOURCE="aws_iam_role"
+  #     ;;
+  #   ec2)
+  #     TF_RESOURCE="aws_instance"
+  #     ;;
+  #   vpc)
+  #     TF_RESOURCE="aws_vpc"
+  #     ;;
+  #   subnet)
+  #     TF_RESOURCE="aws_subnet"
+  #     ;;
+  #   security-group)
+  #     TF_RESOURCE="aws_security_group"
+  #     ;;
+  #   route-table)
+  #     TF_RESOURCE="aws_route_table"
+  #     ;;
+  #   internet-gateway)
+  #     TF_RESOURCE="aws_internet_gateway"
+  #     ;;
+  #   repository)
+  #     TF_RESOURCE="aws_ecr_repository"
+  #     ;;
+  #   *)
+  #     echo "Skipping unsupported resource type: $RESOURCE_TYPE"
+  #     continue
+  #     ;;
+  # esac
 
   if terraform state list | grep "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
