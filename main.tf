@@ -14,11 +14,9 @@ terraform {
     # }
   }
   backend "s3" {
-    bucket         = "printrevo-terraform-state-bucket"
-    key            = "terraform.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
-    dynamodb_table = "printrevo-terraform-lock-table"
+    bucket = "printrevo-terraform-state-bucket"
+    key    = "printrevo/infra/iac-terraform-repos.tfstate"
+    region = "eu-central-1"
   }
 }
 
@@ -66,8 +64,8 @@ module "github_repositories" {
   organization     = "PrintRevo"
   repositories_dir = "./datas/repository-definitions"
 
-  aws_profile = var.aws_profile
-  aws_access_key_id = var.aws_access_key_id
+  aws_profile           = var.aws_profile
+  aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_access_secret_key
-  auto_init      = true
+  auto_init             = true
 }
