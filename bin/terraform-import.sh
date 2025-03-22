@@ -34,7 +34,7 @@ for ARN in $RESOURCE_ARNS; do
   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
 
   # Determine Terraform resource type dynamically
-  # case $RESOURCE_TYPE in
+  case $RESOURCE_TYPE in
   #   cluster)
   #     TF_RESOURCE="cluster"
   #     ;;
@@ -59,15 +59,15 @@ for ARN in $RESOURCE_ARNS; do
   #   subnet)
   #     TF_RESOURCE="aws_subnet"
   #     ;;
-  #   security-group)
-  #     TF_RESOURCE="aws_security_group"
-  #     ;;
-  #   route-table)
-  #     TF_RESOURCE="aws_route_table"
-  #     ;;
-  #   internet-gateway)
-  #     TF_RESOURCE="aws_internet_gateway"
-  #     ;;
+    security-group)
+      TF_RESOURCE="aws_security_group"
+      ;;
+    route-table)
+      TF_RESOURCE="aws_route_table"
+      ;;
+    internet-gateway)
+      TF_RESOURCE="aws_internet_gateway"
+      ;;
   #   repository)
   #     TF_RESOURCE="aws_ecr_repository"
   #     ;;
@@ -75,7 +75,7 @@ for ARN in $RESOURCE_ARNS; do
   #     echo "Skipping unsupported resource type: $RESOURCE_TYPE"
   #     continue
   #     ;;
-  # esac
+  esac
 
   if terraform state list | grep "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
