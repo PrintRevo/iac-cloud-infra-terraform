@@ -1,7 +1,7 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = "printrevo-${var.environment}-cluster"
+  name = "${var.environment}-cluster"
   tags = {
-    Name        = "printrevo-${var.environment}-cluster"
+    Name        = "${var.environment}-cluster"
     Environment = var.environment
   }
 
