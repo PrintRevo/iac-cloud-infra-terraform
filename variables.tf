@@ -30,12 +30,10 @@ variable "aws_profile" {
 variable "aws_access_key_id" {
   description = "AWS Access Key ID"
   type        = string
-  default     = "default"
 }
 variable "aws_access_secret_key" {
   description = "AWS Access Secret Key"
   type        = string
-  default     = "default"
 }
 
 variable "redis_node_type" {

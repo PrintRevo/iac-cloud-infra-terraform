@@ -4,9 +4,9 @@ resource "aws_vpc" "main" {
 
   enable_dns_support   = true
   enable_dns_hostnames = true
-  
+
   tags = {
-    Name = "printreveo-${var.environment}-vpc"
+    Name        = "printreveo-${var.environment}-vpc"
     Environment = var.environment
   }
 
@@ -17,9 +17,10 @@ resource "aws_vpc" "main" {
 
 # Public Subnet 
 resource "aws_subnet" "public_a" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "${var.aws_region}a"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-central-1a"
+  # availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -32,9 +33,9 @@ resource "aws_subnet" "public_a" {
   }
 }
 resource "aws_subnet" "public_b" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "${var.aws_region}b"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-central-1b"
   map_public_ip_on_launch = true
 
   tags = {
