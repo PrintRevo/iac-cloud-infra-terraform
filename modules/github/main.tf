@@ -66,7 +66,6 @@ resource "github_branch_protection" "main" {
     for k, v in github_repository.repos : k => v if v.visibility == "public"
   }
   repository_id = each.value.node_id
-  # repository    = each.value.name
   pattern = "main"
 
   required_pull_request_reviews {
