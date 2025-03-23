@@ -74,6 +74,12 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      - name: Get AWS Resources List 
+        run: aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=dev --output json | jq -r '.ResourceTagMappingList[].ResourceARN'
+
+      - name: Get Terraform States
+        run: terraform state list
+
       - name: Set execute permission for the import script
         run: chmod +x ./bin/terraform-import.sh
 
