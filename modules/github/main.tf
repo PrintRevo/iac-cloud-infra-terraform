@@ -1,34 +1,30 @@
 # Load JSON files from the specified directory
 locals {
-  # Get list of JSON files in the directory
   filenames = fileset(var.repositories_dir, "*.json")
 
-  # Read and parse each JSON file
   repos_from_files = [
     for filename in local.filenames :
     jsondecode(file("${var.repositories_dir}/${filename}"))
   ]
 }
 
-# Data source to get all existing repositories in the organization
+# Fetch all existing repositories in the organization
 data "github_repositories" "existing" {
   query = "org:${var.organization}"
 }
 
 locals {
-  # Create a set of existing repository names for efficient lookup
   existing_repos = toset(data.github_repositories.existing.names)
 
-  # Filter out repositories that already exist
   repos_to_create = [
     for repo in local.repos_from_files : repo
     if !contains(local.existing_repos, repo.name)
   ]
 
-  # Map of repositories to create
   repos_map = { for repo in local.repos_to_create : repo.name => repo }
 }
 
+# Create repositories
 resource "github_repository" "repos" {
   for_each = local.repos_map
 
@@ -44,27 +40,9 @@ resource "github_repository" "repos" {
 
   topics               = ["terraform-managed"]
   vulnerability_alerts = true
-
-  dynamic "branches" {
-    for_each = ["main"]
-    content {
-      name = branches.value
-
-      protection_rules {
-        required_pull_request_reviews {
-          required_approving_review_count = 1
-          dismiss_stale_reviews           = true
-        }
-        required_status_checks {
-          strict   = true
-          contexts = ["ci/github-actions"]
-        }
-      }
-    }
-  }
 }
 
-# Create develop branch for each new repository
+# Create 'develop' branch for each new repository
 resource "github_branch" "develop" {
   for_each = github_repository.repos
 
@@ -73,7 +51,7 @@ resource "github_branch" "develop" {
   source_branch = each.value.default_branch
 }
 
-# Set develop as default branch for each new repository
+# Set 'develop' as the default branch
 resource "github_branch_default" "default" {
   for_each = github_branch.develop
 
@@ -81,7 +59,25 @@ resource "github_branch_default" "default" {
   branch     = each.value.branch
 }
 
-# Add AWS secret to each new repository
+# Protect the main branch
+resource "github_branch_protection" "main" {
+  for_each      = github_repository.repos
+  repository_id = each.value.node_id
+  # repository    = each.value.name
+  pattern       = "main"
+
+  required_pull_request_reviews {
+    required_approving_review_count = 1
+    dismiss_stale_reviews           = true
+  }
+
+  required_status_checks {
+    strict   = true
+    contexts = ["ci/travis"]
+  }
+}
+
+# Add AWS secrets to each repository
 resource "github_actions_secret" "aws_access_key_id" {
   for_each = github_repository.repos
 
@@ -90,7 +86,6 @@ resource "github_actions_secret" "aws_access_key_id" {
   plaintext_value = var.aws_access_key_id
 }
 
-# Add AWS secret to each new repository
 resource "github_actions_secret" "aws_secret_access_key" {
   for_each = github_repository.repos
 
@@ -99,6 +94,7 @@ resource "github_actions_secret" "aws_secret_access_key" {
   plaintext_value = var.aws_secret_access_key
 }
 
+# Outputs
 output "repositories_created" {
   value = {
     for name, repo in github_repository.repos : name => {
