@@ -4,11 +4,6 @@ variable "organization" {
   default     = "PrintRevo"
 }
 
-variable "module_dir" {
-  description = "Directory path containing JSON files with repository metadata"
-  type        = string
-}
-
 variable "auto_init" {
   description = "Automatically initialize repositories with README"
   type        = bool

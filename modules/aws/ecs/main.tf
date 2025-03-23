@@ -1,5 +1,5 @@
 locals {
-  service_files = fileset("${var.module_dir}/services", "*.json")
+  service_files = fileset("${path.module}/services", "*.json")
 
   services = [for file in local.service_files : jsondecode(file("${path.module}/services/${file}"))]
 }

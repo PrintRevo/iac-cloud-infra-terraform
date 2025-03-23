@@ -34,7 +34,6 @@ module "ecr_repositories" {
 module "ecs_cluster_and_services" {
   source      = "./modules/aws/ecs"
   environment = var.environment
-  module_dir  = var.module_dir
 
   depends_on = [module.main_vpc]
   vpc_id     = module.main_vpc.vpc_id
@@ -64,7 +63,6 @@ module "storage_services" {
 #   source = "./modules/github"
 
 #   organization     = "PrintRevo"
-#   module_dir = "./datas"
 
 #   aws_profile           = var.aws_profile
 #   aws_access_key_id     = var.aws_access_key_id
