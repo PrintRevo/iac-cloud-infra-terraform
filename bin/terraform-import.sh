@@ -82,6 +82,15 @@ for ARN in $RESOURCE_ARNS; do
     continue
   fi
 
+  # Read JSON files in ./datas/repository-definitions
+  for FILE in ./datas/repository-definitions/*.json; do
+    NAME=$(jq -r 'name' "$FILE")
+    if terraform state list | grep "$NAME"; then
+      echo "Resource $NAME already managed by Terraform. Skipping import."
+      continue 2
+    fi
+  done
+
   echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
   if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
