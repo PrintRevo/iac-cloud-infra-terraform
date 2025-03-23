@@ -39,7 +39,8 @@ resource "github_repository" "repos" {
   allow_squash_merge = true
 
   topics               = ["terraform-managed"]
-  vulnerability_alerts = true
+  # Not available for free GitHub accounts
+  # vulnerability_alerts = true
 }
 
 # Create 'develop' branch for each new repository
@@ -48,7 +49,7 @@ resource "github_branch" "develop" {
 
   repository    = each.value.name
   branch        = "develop"
-  source_branch = each.value.default_branch
+  source_branch = lookup(each.value, "default_branch", "main")
 }
 
 # Set 'develop' as the default branch
@@ -61,10 +62,12 @@ resource "github_branch_default" "default" {
 
 # Protect the main branch
 resource "github_branch_protection" "main" {
-  for_each      = github_repository.repos
+  for_each = {
+    for k, v in github_repository.repos : k => v if v.visibility == "public"
+  }
   repository_id = each.value.node_id
   # repository    = each.value.name
-  pattern       = "main"
+  pattern = "main"
 
   required_pull_request_reviews {
     required_approving_review_count = 1
