@@ -13,7 +13,7 @@ resource "aws_ecr_repository" "sso-keycloak-template" {
     scan_on_push = true
   }
 
-  image_tag_mutability = "MUTABLE" 
+  image_tag_mutability = "MUTABLE"
 
   encryption_configuration {
     encryption_type = "AES256"
@@ -26,7 +26,7 @@ resource "aws_ecr_repository" "sso-keycloak-template" {
 
 resource "aws_ecr_repository_policy" "ecr-repo-policy" {
   repository = aws_ecr_repository.sso-keycloak-template.name
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -34,7 +34,7 @@ resource "aws_ecr_repository_policy" "ecr-repo-policy" {
         Sid    = "AllowPull"
         Effect = "Allow"
         Principal = {
-          AWS = "*"  # Replace with specific ARNs for production use
+          AWS = "*" # Replace with specific ARNs for production use
         }
         Action = [
           "ecr:GetDownloadUrlForLayer",

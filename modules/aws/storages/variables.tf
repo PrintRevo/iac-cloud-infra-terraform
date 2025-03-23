@@ -40,5 +40,5 @@ variable "subnet_ids" {
 
 variable "aws_security_group_public_access_id" {
   description = "AWS Group Public IP"
-  type = string
+  type        = string
 }

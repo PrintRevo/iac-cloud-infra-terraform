@@ -1,15 +1,15 @@
 resource "aws_s3_bucket" "core_bucket" {
   bucket = "printrevo-${var.environment}-bucket"
- 
+
   lifecycle {
     ignore_changes = [
       bucket,
       bucket_prefix
     ]
-    prevent_destroy = false  # Set to true if you want to prevent bucket deletion
+    prevent_destroy = false # Set to true if you want to prevent bucket deletion
   }
 
-   tags = {
+  tags = {
     Environment = var.environment
   }
 }
