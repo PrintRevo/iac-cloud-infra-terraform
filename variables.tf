@@ -51,7 +51,7 @@ variable "rds_instance_class" {
 variable "rds_username" {
   description = "Username for RDS Postgres"
   type        = string
-  default     = "admin"
+  sensitive   = true
 }
 
 variable "rds_password" {
