@@ -1,12 +1,20 @@
 {
-    "service_name": "keycloak-iam-svc",
-    "cluster_name": "printrevo-pod-cluster",
-    "task_family": "iam-svc",
-    "image": "nginx:latest",
-    "cpu": 256,
-    "memory": 512,
-    "container_port": 80,
-    "desired_count": 2,
-    "launch_type": "FARGATE"
+  "service_name": "keycloak-iam-svc",
+  "cluster_name": "printrevo-pod-cluster",
+  "task_family": "iam-svc",
+  "image": "nginx:latest",
+  "cpu": 256,
+  "memory": 512,
+  "container_port": 80,
+  "desired_count": 2,
+  "launch_type": "EC2",
+  "health_check": {
+    "path": "/",
+    "port": "80",
+    "protocol": "HTTP",
+    "interval": 30,
+    "timeout": 5,
+    "healthy_threshold": 1,
+    "unhealthy_threshold": 2
   }
-  
+}

@@ -35,12 +35,15 @@ module "ecs_cluster_and_services" {
   source      = "./modules/aws/ecs"
   environment = var.environment
 
-  depends_on = [module.main_vpc]
+  depends_on = [module.main_vpc, module.ecr_repositories]
   vpc_id     = module.main_vpc.vpc_id
   subnet_ids = [
     module.main_vpc.public_subnet_a_id,
     module.main_vpc.public_subnet_b_id
   ]
+
+  ecr_repositories = module.ecr_repositories.ecr_repositories
+
 }
 
 module "storage_services" {

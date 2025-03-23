@@ -12,3 +12,8 @@ variable "vpc_id" {
   description = "VPC ID"
   type        = string
 }
+
+variable "ecr_repositories" {
+  description = "ECR repositories"
+  type        = map(any)
+}
