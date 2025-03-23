@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Exit on error
+set -e # Exit on error
 
 ENVIRONMENT=$1
 
@@ -23,9 +23,9 @@ echo "Importing resources into Terraform..."
 
 # Loop through each existing ARN and import it into Terraform
 for ARN in $RESOURCE_ARNS; do
-#   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
-#   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
-#   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
+  #   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
+  #   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
+  #   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
 
   RESOURCE_TYPE=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+:([^\/]+).*/\1/')
   RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
@@ -35,46 +35,46 @@ for ARN in $RESOURCE_ARNS; do
 
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
-  #   cluster)
-  #     TF_RESOURCE="cluster"
-  #     ;;
-  #   s3)
-  #     TF_RESOURCE="aws_s3_bucket"
-  #     ;;
-  #   sqs)
-  #     TF_RESOURCE="aws_sqs_queue"
-  #     ;;
-  #   rds)
-  #     TF_RESOURCE="aws_db_instance"
-  #     ;;
-  #   iam)
-  #     TF_RESOURCE="aws_iam_role"
-  #     ;;
-  #   ec2)
-  #     TF_RESOURCE="aws_instance"
-  #     ;;
-  #   vpc)
-  #     TF_RESOURCE="aws_vpc"
-  #     ;;
-  #   subnet)
-  #     TF_RESOURCE="aws_subnet"
-  #     ;;
-    security-group)
-      TF_RESOURCE="aws_security_group"
-      ;;
-    route-table)
-      TF_RESOURCE="aws_route_table"
-      ;;
-    internet-gateway)
-      TF_RESOURCE="aws_internet_gateway"
-      ;;
-  #   repository)
-  #     TF_RESOURCE="aws_ecr_repository"
-  #     ;;
-  #   *)
-  #     echo "Skipping unsupported resource type: $RESOURCE_TYPE"
-  #     continue
-  #     ;;
+  cluster)
+    TF_RESOURCE="cluster"
+    ;;
+  s3)
+    TF_RESOURCE="aws_s3_bucket"
+    ;;
+  sqs)
+    TF_RESOURCE="aws_sqs_queue"
+    ;;
+  rds)
+    TF_RESOURCE="aws_db_instance"
+    ;;
+  iam)
+    TF_RESOURCE="aws_iam_role"
+    ;;
+  ec2)
+    TF_RESOURCE="aws_instance"
+    ;;
+  vpc)
+    TF_RESOURCE="aws_vpc"
+    ;;
+  subnet)
+    TF_RESOURCE="aws_subnet"
+    ;;
+  security-group)
+    TF_RESOURCE="aws_security_group"
+    ;;
+  route-table)
+    TF_RESOURCE="aws_route_table"
+    ;;
+  internet-gateway)
+    TF_RESOURCE="aws_internet_gateway"
+    ;;
+  repository)
+    TF_RESOURCE="aws_ecr_repository"
+    ;;
+  *)
+    echo "Skipping unsupported resource type: $RESOURCE_TYPE"
+    continue
+    ;;
   esac
 
   if terraform state list | grep "$TF_RESOURCE.$RESOURCE_ID"; then
@@ -82,9 +82,8 @@ for ARN in $RESOURCE_ARNS; do
     continue
   fi
 
-
- echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
- if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
+  echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
+  if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
   else
     echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
