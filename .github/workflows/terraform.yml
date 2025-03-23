@@ -84,7 +84,7 @@ jobs:
       - name: Set execute permission for the import script
         run: chmod +x ./bin/terraform-import.sh
 
-      - name: Import AWS Services by Environment Tag
+      - name: Import Modules Services by Environment Tag
         run: ./bin/terraform-import.sh dev || echo "Import script failed but continuing..."
 
       - name: Terraform Plan

@@ -57,14 +57,14 @@ module "storage_services" {
   aws_region                          = var.aws_region
 }
 
-module "github_repositories" {
-  source = "./modules/github"
+# module "github_repositories" {
+#   source = "./modules/github"
 
-  organization     = "PrintRevo"
-  repositories_dir = "./datas/repository-definitions"
+#   organization     = "PrintRevo"
+#   repositories_dir = "./datas/repository-definitions"
 
-  aws_profile           = var.aws_profile
-  aws_access_key_id     = var.aws_access_key_id
-  aws_secret_access_key = var.aws_access_secret_key
-  auto_init             = true
-}
+#   aws_profile           = var.aws_profile
+#   aws_access_key_id     = var.aws_access_key_id
+#   aws_secret_access_key = var.aws_access_secret_key
+#   auto_init             = true
+# }
