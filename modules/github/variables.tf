@@ -4,7 +4,7 @@ variable "organization" {
   default     = "PrintRevo"
 }
 
-variable "repositories_dir" {
+variable "module_dir" {
   description = "Directory path containing JSON files with repository metadata"
   type        = string
 }

@@ -35,7 +35,7 @@ for ARN in $RESOURCE_ARNS; do
 
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
-  cluster)
+  ecs_cluster)
     TF_RESOURCE="aws_ecs_cluster"
     ;;
   s3)
@@ -97,7 +97,7 @@ for ARN in $RESOURCE_ARNS; do
   #     continue 2
   #   fi
   # done
-  
+
 done
 
 echo "Terraform import completed successfully!"

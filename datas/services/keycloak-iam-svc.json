@@ -1,0 +1,12 @@
+{
+    "service_name": "keycloak-iam-svc",
+    "cluster_name": "ecs-cluster",
+    "task_family": "web-task",
+    "image": "nginx:latest",
+    "cpu": 256,
+    "memory": 512,
+    "container_port": 80,
+    "desired_count": 2,
+    "launch_type": "FARGATE"
+  }
+  

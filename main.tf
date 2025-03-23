@@ -34,11 +34,14 @@ module "ecr_repositories" {
 module "ecs_cluster_and_services" {
   source      = "./modules/aws/ecs"
   environment = var.environment
-}
+  module_dir  = var.module_dir
 
-module "iam_role_and_permission" {
-  source      = "./modules/aws/iam"
-  environment = var.environment
+  depends_on = [module.main_vpc]
+  vpc_id     = module.main_vpc.vpc_id
+  subnet_ids = [
+    module.main_vpc.public_subnet_a_id,
+    module.main_vpc.public_subnet_b_id
+  ]
 }
 
 module "storage_services" {
@@ -61,7 +64,7 @@ module "storage_services" {
 #   source = "./modules/github"
 
 #   organization     = "PrintRevo"
-#   repositories_dir = "./datas/repository-definitions"
+#   module_dir = "./datas"
 
 #   aws_profile           = var.aws_profile
 #   aws_access_key_id     = var.aws_access_key_id

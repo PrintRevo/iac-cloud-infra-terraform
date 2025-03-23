@@ -9,3 +9,7 @@ output "public_subnet_b_id" {
 output "aws_security_group_public_access_id" {
   value = aws_security_group.public_access.id
 }
+
+output "vpc_id" {
+  value = aws_vpc.main.id
+}

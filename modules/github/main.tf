@@ -1,10 +1,10 @@
 # Load JSON files from the specified directory
 locals {
-  filenames = fileset(var.repositories_dir, "*.json")
+  filenames = fileset(var.module_dir, "*.json")
 
   repos_from_files = [
     for filename in local.filenames :
-    jsondecode(file("${var.repositories_dir}/${filename}"))
+    jsondecode(file("${var.module_dir}/repositories/${filename}"))
   ]
 }
 

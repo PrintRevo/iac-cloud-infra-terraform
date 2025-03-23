@@ -53,3 +53,9 @@ variable "rds_password" {
   type        = string
   sensitive   = true
 }
+
+
+variable "module_dir" {
+  description = "Module Conf Files Directory"
+  type        = string
+}
