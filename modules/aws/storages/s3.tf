@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "printrevo_bucket" {
       bucket,
       bucket_prefix
     ]
-    prevent_destroy = false 
+    prevent_destroy = false
   }
 
   tags = {

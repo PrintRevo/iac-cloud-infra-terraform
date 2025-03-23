@@ -36,12 +36,32 @@ resource "github_repository" "repos" {
   description = each.value.description
   visibility  = each.value.visibility
 
-
   auto_init = var.auto_init
 
   allow_merge_commit = true
   allow_rebase_merge = true
   allow_squash_merge = true
+
+  topics               = ["terraform-managed"]
+  vulnerability_alerts = true
+
+  dynamic "branches" {
+    for_each = ["main"]
+    content {
+      name = branches.value
+
+      protection_rules {
+        required_pull_request_reviews {
+          required_approving_review_count = 1
+          dismiss_stale_reviews           = true
+        }
+        required_status_checks {
+          strict   = true
+          contexts = ["ci/github-actions"]
+        }
+      }
+    }
+  }
 }
 
 # Create develop branch for each new repository
