@@ -16,6 +16,7 @@ jobs:
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       S3_BUCKET: "printrevo-terraform-state"
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
     steps:
       - name: Checkout repository
@@ -87,7 +88,7 @@ jobs:
         run: ./bin/terraform-import.sh dev || echo "Import script failed but continuing..."
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -var aws_profile=printrevo-terraform -var github_token='${{ steps.ssm.outputs.github_pat_token }}' -var aws_region='${{ secrets.AWS_REGION }}' -var aws_access_key_id='${{ secrets.AWS_ACCESS_KEY_ID }}' -var aws_access_secret_key='${{ secrets.AWS_SECRET_ACCESS_KEY }}' -var rds_password='${{ steps.ssm.outputs.db_password }}'
+        run: terraform plan -out=tfplan -var aws_profile=printrevo-terraform -var github_token='${{ secrets.GH_PAT }}' -var aws_region='${{ secrets.AWS_REGION }}' -var aws_access_key_id='${{ secrets.AWS_ACCESS_KEY_ID }}' -var aws_access_secret_key='${{ secrets.AWS_SECRET_ACCESS_KEY }}' -var rds_password='${{ steps.ssm.outputs.db_password }}'
 
       - name: Set execute permission for the apply script
         run: chmod +x ./bin/terraform-apply.sh
