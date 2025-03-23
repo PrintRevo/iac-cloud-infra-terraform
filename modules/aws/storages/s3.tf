@@ -1,12 +1,12 @@
-resource "aws_s3_bucket" "core_bucket" {
-  bucket = "printrevo-${var.environment}-bucket"
+resource "aws_s3_bucket" "printrevo_bucket" {
+  bucket = "printrevo-bucket-${var.environment}"
 
   lifecycle {
     ignore_changes = [
       bucket,
       bucket_prefix
     ]
-    prevent_destroy = false # Set to true if you want to prevent bucket deletion
+    prevent_destroy = false 
   }
 
   tags = {
@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "core_bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
-  bucket = aws_s3_bucket.core_bucket.id
+  bucket = aws_s3_bucket.printrevo_bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -26,10 +26,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
 
 # Block public access (recommended)
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
-  bucket = aws_s3_bucket.core_bucket.id
+  bucket = aws_s3_bucket.printrevo_bucket.id
 
-  block_public_acls       = true
+  block_public_acls       = false
   block_public_policy     = true
-  ignore_public_acls      = true
+  ignore_public_acls      = false
   restrict_public_buckets = true
 }

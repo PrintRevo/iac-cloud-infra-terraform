@@ -48,12 +48,6 @@ variable "rds_instance_class" {
   default     = "db.t2.micro"
 }
 
-variable "rds_username" {
-  description = "Username for RDS Postgres"
-  type        = string
-  sensitive   = true
-}
-
 variable "rds_password" {
   description = "Password for RDS Postgres"
   type        = string

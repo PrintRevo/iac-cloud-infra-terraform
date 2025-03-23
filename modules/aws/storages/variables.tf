@@ -22,11 +22,6 @@ variable "rds_instance_class" {
   type        = string
 }
 
-variable "rds_username" {
-  description = "Username for RDS Postgres"
-  type        = string
-}
-
 variable "rds_password" {
   description = "Password for RDS Postgres"
   type        = string

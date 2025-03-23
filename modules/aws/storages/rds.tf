@@ -24,7 +24,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot = true
 
   # Database configuration
-  username = var.rds_username
+  username = "printrevo_admin"
   password = var.rds_password
 
   # Network configuration

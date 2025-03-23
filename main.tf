@@ -50,7 +50,6 @@ module "storage_services" {
   ]
   environment                         = var.environment
   aws_profile                         = var.aws_profile
-  rds_username                        = var.rds_username
   rds_password                        = var.rds_password
   aws_security_group_public_access_id = module.main_vpc.aws_security_group_public_access_id
   redis_node_type                     = var.redis_node_type
