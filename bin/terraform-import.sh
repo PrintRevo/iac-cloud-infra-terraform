@@ -44,7 +44,7 @@ for ARN in $RESOURCE_ARNS; do
   sqs)
     TF_RESOURCE="aws_sqs_queue"
     ;;
-  rds)
+  db)
     TF_RESOURCE="aws_db_instance"
     ;;
   iam)
