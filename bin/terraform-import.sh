@@ -14,7 +14,7 @@ echo "Fetching AWS resources tagged with Environment=$ENVIRONMENT..."
 # Fetch resource ARNs tagged with the specified environment
 RESOURCE_ARNS=$(aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=$ENVIRONMENT --output json | jq -r '.ResourceTagMappingList[].ResourceARN')
 
-echo "Resources found:  $(echo "$RESOURCE_ARNS" | wc -l)"
+echo "Resources found: aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=$ENVIRONMENT --output json | jq -r '.ResourceTagMappingList[].ResourceARN'"
 
 if [ -z "$RESOURCE_ARNS" ]; then
   echo "No resources found for Environment=$ENVIRONMENT"
