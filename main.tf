@@ -23,7 +23,7 @@ terraform {
 module "main_vpc" {
   source      = "./modules/aws/vpc"
   environment = var.environment
-  aws_region  = var.aws_profile
+  aws_region  = var.aws_region
 }
 
 module "ecr_repositories" {
