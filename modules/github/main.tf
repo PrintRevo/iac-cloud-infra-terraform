@@ -38,7 +38,7 @@ resource "github_repository" "repos" {
   allow_rebase_merge = true
   allow_squash_merge = true
 
-  topics               = ["terraform-managed"]
+  topics = ["terraform-managed"]
   # Not available for free GitHub accounts
   # vulnerability_alerts = true
 }
@@ -66,7 +66,7 @@ resource "github_branch_protection" "main" {
     for k, v in github_repository.repos : k => v if v.visibility == "public"
   }
   repository_id = each.value.node_id
-  pattern = "main"
+  pattern       = "main"
 
   required_pull_request_reviews {
     required_approving_review_count = 1

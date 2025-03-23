@@ -1,6 +1,7 @@
 variable "organization" {
   description = "GitHub organization (group) name where repositories will be created"
   type        = string
+  default     = "PrintRevo"
 }
 
 variable "repositories_dir" {
