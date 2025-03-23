@@ -12,13 +12,13 @@ variable "aws_region" {
 
 variable "organization" {
   description = "Organisation Name"
-  type = string
-  default = "PrintRevo"
+  type        = string
+  default     = "PrintRevo"
 }
 
 variable "github_token" {
   description = "Github Token"
-  type = string
+  type        = string
 }
 
 variable "aws_profile" {
