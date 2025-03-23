@@ -5,7 +5,7 @@ locals {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.environment}-cluster"
+  name = "printrevo-pod-cluster"
   tags = {
     Name        = "${var.environment}-cluster"
     Environment = var.environment
