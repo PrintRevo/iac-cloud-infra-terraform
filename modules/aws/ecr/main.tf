@@ -1,15 +1,17 @@
 locals {
-  service_files = fileset("${path.module}/../../services", "*.json")
+  service_files = fileset("${path.module}/repositories", "*.json")
 
-  services = [for file in local.service_files : jsondecode(file("${path.module}/../../services/${file}"))]
+  services = [for file in local.service_files : jsondecode(file("${path.module}/repositories/${file}"))]
 }
 
 resource "aws_ecr_repository" "ecr_repos" {
 
-  for_each = { for service in local.services : service.ecr_repository => service }
+  for_each = { for service in local.services : service.repo_name => service }
 
-  name                 = each.value.ecr_repository
-  image_tag_mutability = "MUTABLE"
+  name                 = each.value.name
+  image_tag_mutability = each.value.image_tag_mutability
+
+
 
   lifecycle {
     prevent_destroy = false

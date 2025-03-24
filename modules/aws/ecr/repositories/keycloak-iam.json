@@ -1,0 +1,4 @@
+{
+    "repo_name": "keycloak-iam-service",
+    "image_tag_mutability": "MUTABLE"
+}

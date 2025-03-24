@@ -1,0 +1,4 @@
+{
+    "repo_name": "sso-keycloak-template",
+    "image_tag_mutability": "MUTABLE"
+}
