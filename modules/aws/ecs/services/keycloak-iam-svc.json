@@ -2,7 +2,6 @@
   "service_name": "keycloak-iam-svc",
   "cluster_name": "printrevo-pod-cluster",
   "task_family": "iam-svc",
-  "image": "nginx:latest",
   "cpu": 256,
   "memory": 512,
   "container_port": 80,
