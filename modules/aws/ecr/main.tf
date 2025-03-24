@@ -8,7 +8,7 @@ resource "aws_ecr_repository" "ecr_repos" {
 
   for_each = { for service in local.services : service.repo_name => service }
 
-  name                 = each.value.name
+  name                 = each.value.repo_name
   image_tag_mutability = each.value.image_tag_mutability
 
 
