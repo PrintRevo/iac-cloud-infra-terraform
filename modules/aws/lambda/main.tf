@@ -65,9 +65,9 @@ resource "aws_lambda_function" "lambdas" {
 resource "aws_cloudwatch_event_rule" "schedule" {
   for_each = { for k, v in local.lambdas : k => v if lookup(v, "schedule_expressions", null) != null }
 
-  name                = "${each.value.name}-schedule-${index(each.value.schedule_expressions, each.key)}"
+  name                = "${each.value.name}-schedule"
   description         = "Trigger ${each.value.name} on schedule"
-  schedule_expression = each.value.schedule_expressions[index(each.value.schedule_expressions, each.key)]
+  schedule_expression = each.value.schedule_expressions[0]  # Assuming the first element for simplicity
 }
 
 # Grant EventBridge Permission to Invoke Lambda
