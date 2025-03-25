@@ -70,7 +70,7 @@ module "eks_cluster" {
   vpc_id       = module.main_vpc.vpc_id
   environment  = var.environment
   aws_region   = var.aws_region
-  cluster_name = "printrevo-${var.environment}-eks"
+  cluster_name = "printrevo-${var.environment}-eks-cluster"
 }
 
 # module "github_repositories" {

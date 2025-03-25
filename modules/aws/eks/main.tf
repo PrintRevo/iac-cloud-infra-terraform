@@ -6,6 +6,10 @@ resource "aws_eks_cluster" "eks_cluster" {
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_policy]
+
+  tags = {
+    Environment = var.environment
+  }
 }
 
 resource "aws_iam_role" "eks_role" {
@@ -24,6 +28,9 @@ resource "aws_iam_role" "eks_role" {
       },
     ]
   })
+  tags = {
+    Environment = var.environment
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "eks_policy" {
@@ -37,13 +44,17 @@ resource "aws_eks_node_group" "eks_cluster_node_group" {
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = var.subnet_ids
 
+  instance_types = [var.node_instance_type]
   scaling_config {
-    desired_size = 1
-    max_size     = 1
-    min_size     = 1
+    desired_size = var.desired_capacity
+    max_size     = var.max_size
+    min_size     = var.min_size
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
+  tags = {
+    Environment = var.environment
+  }
 }
 
 resource "aws_iam_role" "eks_node_role" {
@@ -62,6 +73,9 @@ resource "aws_iam_role" "eks_node_role" {
       },
     ]
   })
+  tags = {
+    Environment = var.environment
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "eks_node_policy" {
