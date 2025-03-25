@@ -38,6 +38,14 @@ resource "aws_iam_role_policy_attachment" "eks_policy" {
   role       = aws_iam_role.eks_role.name
 }
 
+resource "aws_instance" "eks_node" {
+  tags = {
+    Name        = "EKS Node"
+    Environment = var.environment
+    Schedule    = "EKSInstanceSchedule"  # Tag for AWS Instance Scheduler
+  }
+}
+
 resource "aws_eks_node_group" "eks_cluster_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = "${var.cluster_name}-node-group"
@@ -54,6 +62,7 @@ resource "aws_eks_node_group" "eks_cluster_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
   tags = {
     Environment = var.environment
+    Schedule    = "EKSInstanceSchedule"
   }
 }
 
