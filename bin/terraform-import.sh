@@ -36,7 +36,7 @@ for ARN in $RESOURCE_ARNS; do
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
   cluster)
-    TF_RESOURCE="aws_ecs_cluster"
+    TF_RESOURCE="aws_eks_cluster"
     ;;
   s3)
     TF_RESOURCE="aws_s3_bucket"
@@ -54,6 +54,9 @@ for ARN in $RESOURCE_ARNS; do
     TF_RESOURCE="aws_iam_role"
     ;;
   ec2)
+    TF_RESOURCE="aws_instance"
+    ;;
+  instance)
     TF_RESOURCE="aws_instance"
     ;;
   vpc)
