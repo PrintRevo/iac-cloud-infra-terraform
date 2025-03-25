@@ -12,7 +12,6 @@ resource "aws_ecr_repository" "ecr_repos" {
   image_tag_mutability = each.value.image_tag_mutability
 
 
-
   lifecycle {
     prevent_destroy = false
   }

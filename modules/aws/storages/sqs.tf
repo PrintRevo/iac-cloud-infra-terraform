@@ -1,4 +1,4 @@
-resource "aws_sqs_queue" "main" {
+resource "aws_sqs_queue" "sqs_queus" {
   name = "printrevo-event-messages-queue"
 
   tags = {
