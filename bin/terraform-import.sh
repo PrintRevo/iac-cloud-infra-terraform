@@ -80,33 +80,26 @@ for ARN in $RESOURCE_ARNS; do
     ;;
   esac
 
-  echo "Resource::: $TF_RESOURCE.$RESOURCE_ID"
-
   if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
-    echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
-    continue
-  fi
-
-  echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
-  if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
-    echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
-  else
-    if [[ "$TF_RESOURCE" == "aws_ecr_repository" ]]; then
-      echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Repository might not be empty or already exists. Skipping..."
+    echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
+    if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
+      echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
     else
       echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
+      continue
     fi
     continue
   fi
 
   # Read JSON files in ./datas/repository-definitions
-  for FILE in ./datas/repository-definitions/*.json; do
+  for FILE in ./modules/ecr/repositories/*.json; do
     NAME=$(jq -r '.repo_name' "$FILE")
     if terraform state list | grep -q "$NAME"; then
       echo "Resource $NAME already managed by Terraform. Skipping import."
       continue 2
     fi
   done
+
   # for FILE in ./datas/repository-definitions/*.json; do
   #   NAME=$(jq -r '.name' "$FILE")
   #   if terraform state list | grep "$NAME"; then
