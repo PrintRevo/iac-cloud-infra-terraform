@@ -80,6 +80,8 @@ for ARN in $RESOURCE_ARNS; do
     ;;
   esac
 
+  echo "Resource::: $TF_RESOURCE.$RESOURCE_ID"
+
   if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Resource $TF_RESOURCE.$RESOURCE_ID already managed by Terraform. Skipping import."
     continue
@@ -89,7 +91,11 @@ for ARN in $RESOURCE_ARNS; do
   if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
   else
-    echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
+    if [[ "$TF_RESOURCE" == "aws_ecr_repository" ]]; then
+      echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Repository might not be empty or already exists. Skipping..."
+    else
+      echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
+    fi
     continue
   fi
 
