@@ -1,0 +1,6 @@
+{
+    "name": "EC2RestartScheduler",
+    "handler": "restart.lambda_handler",
+    "runtime": "python3.9",
+    "description": "Restarts EC2 instances on a schedule"
+}

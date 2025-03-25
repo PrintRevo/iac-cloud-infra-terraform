@@ -1,0 +1,10 @@
+{
+    "name": "EC2StopScheduler",
+    "handler": "stop.lambda_handler",
+    "runtime": "python3.9",
+    "description": "Stops EC2 instances on a schedule",
+    "schedule_expressions": [
+        "cron(0 14 * * ? *)",
+        "cron(0 3 * * ? *)"
+    ]
+}

@@ -61,11 +61,11 @@ resource "aws_iam_role_policy_attachment" "eks_policy" {
 resource "aws_instance" "eks_node" {
   ami           = data.aws_ami.eks_ami.id
   instance_type = var.node_instance_type
-  subnet_id = var.subnet_ids[0]
+  subnet_id     = var.subnet_ids[0]
   tags = {
     Name        = "EKS Node"
     Environment = var.environment
-    Schedule    = "EKSInstanceSchedule"  # Tag for AWS Instance Scheduler
+    Schedule    = "EKSInstanceSchedule" # Tag for AWS Instance Scheduler
   }
 }
 

@@ -73,6 +73,14 @@ module "eks_cluster" {
   cluster_name = "printrevo-${var.environment}-eks"
 }
 
+module "lambda_functions" {
+  source       = "./modules/aws/lambda"
+  environment  = var.environment
+  aws_region   = var.aws_region
+  depends_on   = [module.eks_cluster]
+  instance_ids = module.eks_cluster.eks_node_instance_ids
+}
+
 # module "github_repositories" {
 #   source = "./modules/github"
 

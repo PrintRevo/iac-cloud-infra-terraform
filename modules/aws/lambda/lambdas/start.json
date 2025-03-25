@@ -1,0 +1,10 @@
+{
+    "name": "EC2StartScheduler",
+    "handler": "start.lambda_handler",
+    "runtime": "python3.9",
+    "description": "Starts EC2 instances on a schedule",
+    "schedule_expressions": [
+        "cron(0 10 * * ? *)",
+        "cron(0 21 * * ? *)"
+    ]
+}
