@@ -75,16 +75,16 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Define EKSInstanceSchedule if not exists
-        run: |
-          SCHEDULE_NAME="EKSInstanceSchedule"
-          SCHEDULE=$(aws scheduler list-schedules --query "Schedules[?Name=='$SCHEDULE_NAME'].Name" --output text)
-          if [ -z "$SCHEDULE" ]; then
-            aws scheduler create-schedule --name "$SCHEDULE_NAME" --schedule-expression "cron(0 12-15,21-2 * * ? *)" --target '{"Arn":"arn:aws:events:region:746669216623:rule/EKSInstanceSchedule","RoleArn":"arn:aws:iam::746669216623:role/EKSInstanceScheduleRole"}' --flexible-time-window '{"Mode":"OFF"}'
-            echo "Schedule $SCHEDULE_NAME created."
-          else
-            echo "Schedule $SCHEDULE_NAME already exists."
-          fi
+      # - name: Define EKSInstanceSchedule if not exists
+      #   run: |
+      #     SCHEDULE_NAME="EKSInstanceSchedule"
+      #     SCHEDULE=$(aws scheduler list-schedules --query "Schedules[?Name=='$SCHEDULE_NAME'].Name" --output text)
+      #     if [ -z "$SCHEDULE" ]; then
+      #       aws scheduler create-schedule --name "$SCHEDULE_NAME" --schedule-expression "cron(0 12-15,21-2 * * ? *)" --target '{"Arn":"arn:aws:events:region:746669216623:rule/EKSInstanceSchedule","RoleArn":"arn:aws:iam::746669216623:role/EKSInstanceScheduleRole"}' --flexible-time-window '{"Mode":"OFF"}'
+      #       echo "Schedule $SCHEDULE_NAME created."
+      #     else
+      #       echo "Schedule $SCHEDULE_NAME already exists."
+      #     fi
 
       - name: Get AWS Resources List 
         run: aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=dev --output json | jq -r '.ResourceTagMappingList[].ResourceARN'
