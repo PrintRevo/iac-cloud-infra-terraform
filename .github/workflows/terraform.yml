@@ -13,6 +13,7 @@ jobs:
   terraform:
     name: Terraform Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       S3_BUCKET: "printrevo-terraform-state"
