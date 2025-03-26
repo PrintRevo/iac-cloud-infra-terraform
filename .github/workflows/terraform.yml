@@ -110,6 +110,11 @@ jobs:
 
       - name: Run Terraform Apply
         run: ./bin/terraform-apply.sh
-      
+       
+      - name: Configure kubectl for EKS
+        run: |
+            aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name printrevo-dev-eks
+            kubectl get nodes
+
       - name: Helm Install
         run: helm install printrevo-dev ./modules/aws/eks/helm-template
