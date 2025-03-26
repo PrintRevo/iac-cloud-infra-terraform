@@ -59,6 +59,9 @@ for ARN in $RESOURCE_ARNS; do
   instance)
     TF_RESOURCE="aws_instance"
     ;;
+  nodegroup)
+    TF_RESOURCE="aws_eks_node_group"
+    ;;
   vpc)
     TF_RESOURCE="aws_vpc"
     ;;

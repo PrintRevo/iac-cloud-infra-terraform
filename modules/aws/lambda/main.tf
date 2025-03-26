@@ -67,7 +67,7 @@ resource "aws_cloudwatch_event_rule" "schedule" {
 
   name                = "${each.value.name}-schedule"
   description         = "Trigger ${each.value.name} on schedule"
-  schedule_expression = each.value.schedule_expressions[0]  # Assuming the first element for simplicity
+  schedule_expression = each.value.schedule_expressions[0] # Assuming the first element for simplicity
 }
 
 # Grant EventBridge Permission to Invoke Lambda
