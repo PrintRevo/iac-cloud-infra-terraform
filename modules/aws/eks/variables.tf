@@ -11,7 +11,7 @@ variable "aws_region" {
 variable "node_instance_type" {
   description = "The EC2 instance type for the EKS worker nodes"
   type        = string
-  default     = "t3.micro"
+  default     = "t2.medium"
 }
 
 variable "environment" {
