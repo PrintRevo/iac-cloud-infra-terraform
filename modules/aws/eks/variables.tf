@@ -11,7 +11,7 @@ variable "aws_region" {
 variable "node_instance_type" {
   description = "The EC2 instance type for the EKS worker nodes"
   type        = string
-  default     = "t3.medium"
+  default     = "t2.micro"
 }
 
 variable "environment" {
@@ -34,7 +34,7 @@ variable "min_size" {
 variable "max_size" {
   description = "The maximum number of worker nodes"
   type        = number
-  default     = 4
+  default     = 2
 }
 
 variable "vpc_id" {
