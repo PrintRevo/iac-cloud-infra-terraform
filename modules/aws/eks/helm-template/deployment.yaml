@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.app.name }}
   namespace: {{.Values.app.namespace}}
   labels:
-    app: {{ .Values.name }}
+    app: {{ .Values.app.name }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.service.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Values.app.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
+        app: {{ .Values.app.name }}
     spec:
       containers:
-        - name: {{ .Values.name }}
+        - name: {{ .Values.app.name }}
+          image: {{ .Values.image }}
           imagePullPolicy: Always
           ports:
-            - containerPort: {{ .Values.port }}
+            - containerPort: {{ .Values.service.port }}
           env:
-            {{- range .Values.env }}
+            {{- range .Values.app.env }}
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
