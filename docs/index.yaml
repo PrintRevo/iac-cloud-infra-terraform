@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  printrevo-helm:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-03-28T20:39:45.794667+01:00"
+    description: A Helm chart for PrintRevo EKS services
+    digest: 1055f41849605a954901619fb8e6b9147c987dca9cfa7681c6c11062fa8e2778
+    name: printrevo-helm
+    urls:
+    - https://printrevo.github.io/iac-cloud-infra-terraform/printrevo-helm-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-03-28T20:39:45.794155+01:00"

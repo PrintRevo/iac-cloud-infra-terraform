@@ -117,4 +117,4 @@ jobs:
             kubectl get nodes
 
       - name: Helm Install
-        run: helm install printrevo-dev ./modules/aws/eks/helm-template
+        run: helm install printrevo-dev ./helm
