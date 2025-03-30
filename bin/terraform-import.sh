@@ -118,10 +118,6 @@ for ARN in $RESOURCE_ARNS; do
     echo "No matching state found for $TF_RESOURCE. Skipping import."
     continue
   fi
-  else
-    echo "No matching state found for $TF_RESOURCE. Skipping import."
-    continue
-  fi
 
   # Read JSON files in ./datas/repository-definitions
   for FILE in ./modules/aws/ecr/repositories/*.json; do
