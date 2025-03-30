@@ -35,8 +35,14 @@ for ARN in $RESOURCE_ARNS; do
 
   # Determine Terraform resource type dynamically
   case $RESOURCE_TYPE in
+  vpc)
+    TF_RESOURCE="aws_vpc"
+    ;;
   cluster)
     TF_RESOURCE="aws_eks_cluster"
+    ;;
+  "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
+    TF_RESOURCE="aws_s3_bucket"
     ;;
   s3)
     TF_RESOURCE="aws_s3_bucket"
@@ -44,7 +50,13 @@ for ARN in $RESOURCE_ARNS; do
   sqs)
     TF_RESOURCE="aws_sqs_queue"
     ;;
+  "printrevo-event-messages-queue")
+    TF_RESOURCE="aws_sqs_queue"
+    ;;
   db)
+    TF_RESOURCE="aws_db_instance"
+    ;;
+  "db:printrevo-$ENVIRONMENT-db")
     TF_RESOURCE="aws_db_instance"
     ;;
   subgrp)
@@ -59,11 +71,8 @@ for ARN in $RESOURCE_ARNS; do
   instance)
     TF_RESOURCE="aws_instance"
     ;;
-  printrevo-dev-eks-node-group)
+  nodegroup)
     TF_RESOURCE="aws_eks_node_group"
-    ;;
-  vpc)
-    TF_RESOURCE="aws_vpc"
     ;;
   subnet)
     TF_RESOURCE="aws_subnet"
@@ -81,7 +90,7 @@ for ARN in $RESOURCE_ARNS; do
     TF_RESOURCE="aws_ecr_repository"
     ;;
   *)
-    echo "Skipping unsupported resource type: $RESOURCE_TYPE"
+    echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
     continue
     ;;
   esac
