@@ -41,10 +41,7 @@ for ARN in $RESOURCE_ARNS; do
   cluster)
     TF_RESOURCE="aws_eks_cluster"
     ;;
-  "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
-    TF_RESOURCE="aws_s3_bucket"
-    ;;
-  s3)
+  s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
     TF_RESOURCE="aws_s3_bucket"
     ;;
   sqs)
@@ -53,10 +50,7 @@ for ARN in $RESOURCE_ARNS; do
   "printrevo-event-messages-queue")
     TF_RESOURCE="aws_sqs_queue"
     ;;
-  db)
-    TF_RESOURCE="aws_db_instance"
-    ;;
-  "db:printrevo-$ENVIRONMENT-db")
+  db | "db:printrevo-$ENVIRONMENT-db")
     TF_RESOURCE="aws_db_instance"
     ;;
   subgrp)
@@ -96,17 +90,20 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
-  if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
-    echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
-    if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
-      echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
+  TF_STATE=$(terraform state list | grep "$TF_RESOURCE")
+  if [ -n "$TF_STATE" ]; then
+    echo "Importing $TF_STATE...$ARN"
+    if terraform import $TF_STATE $ARN; then
+      echo "Successfully imported $TF_STATE"
     else
-      echo "Error importing $TF_RESOURCE.$RESOURCE_ID. Skipping..."
+      echo "Error importing $TF_STATE. Skipping..."
       continue
     fi
+  else
+    echo "No matching state found for $TF_RESOURCE. Skipping import."
     continue
   fi
-  sleep 1
+  sleep 5
 
   # Read JSON files in ./datas/repository-definitions
   for FILE in ./modules/aws/ecr/repositories/*.json; do
