@@ -95,8 +95,10 @@ for ARN in $RESOURCE_ARNS; do
 
   TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
   if [ -n "$TF_STATES" ]; then
-    for TF_STATE in $TF_STATES; do
+    IFS=$'\n' read -rd '' -a TF_STATE_ARRAY <<<"$TF_STATES"
+    for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
       echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
+      # Uncomment the following block to enable actual import
       # if terraform import $TF_STATE $RESOURCE_ID \
       #   -var aws_profile="$AWS_PROFILE" \
       #   -var github_token="$GITHUB_TOKEN" \
@@ -112,6 +114,10 @@ for ARN in $RESOURCE_ARNS; do
       # fi
       sleep 5
     done
+  else
+    echo "No matching state found for $TF_RESOURCE. Skipping import."
+    continue
+  fi
   else
     echo "No matching state found for $TF_RESOURCE. Skipping import."
     continue
