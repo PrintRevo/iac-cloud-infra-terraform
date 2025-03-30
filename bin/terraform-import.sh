@@ -90,20 +90,22 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
-  TF_STATE=$(terraform state list | grep "$TF_RESOURCE")
-  if [ -n "$TF_STATE" ]; then
-    echo "Importing $TF_STATE" "$RESOURCE_ID"
-    if terraform import "$TF_STATE" "$RESOURCE_ID"; then
-      echo "Successfully imported $TF_STATE"
-    else
-      echo "Error importing $TF_STATE. Skipping..."
-      continue
-    fi
+  TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
+  if [ -n "$TF_STATES" ]; then
+    for TF_STATE in $TF_STATES; do
+      echo "Importing $TF_STATE with ID $RESOURCE_ID"
+      if terraform import "$TF_STATE" "$RESOURCE_ID"; then
+        echo "Successfully imported $TF_STATE"
+      else
+        echo "Error importing $TF_STATE. Skipping..."
+        continue
+      fi
+      sleep 5
+    done
   else
     echo "No matching state found for $TF_RESOURCE. Skipping import."
     continue
   fi
-  sleep 5
 
   # Read JSON files in ./datas/repository-definitions
   for FILE in ./modules/aws/ecr/repositories/*.json; do
