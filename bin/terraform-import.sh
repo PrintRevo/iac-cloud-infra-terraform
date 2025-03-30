@@ -83,9 +83,9 @@ for ARN in $RESOURCE_ARNS; do
   internet-gateway)
     TF_RESOURCE="aws_internet_gateway"
     ;;
-  repository)
-    TF_RESOURCE="aws_ecr_repository"
-    ;;
+  # repository)
+  #   TF_RESOURCE="aws_ecr_repository"
+  #   ;;
   *)
     echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
     continue
