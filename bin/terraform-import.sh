@@ -105,7 +105,8 @@ for ARN in $RESOURCE_ARNS; do
     fi
     continue
   fi
-
+  sleep 1
+  
   # Read JSON files in ./datas/repository-definitions
   for FILE in ./modules/aws/ecr/repositories/*.json; do
     NAME=$(jq -r '.repo_name' "$FILE")
