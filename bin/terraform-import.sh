@@ -99,19 +99,19 @@ for ARN in $RESOURCE_ARNS; do
     for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
       echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
       # Uncomment the following block to enable actual import
-      # if terraform import $TF_STATE $RESOURCE_ID \
-      #   -var aws_profile="$AWS_PROFILE" \
-      #   -var github_token="$GITHUB_TOKEN" \
-      #   -var aws_region="$AWS_REGION" \
-      #   -var aws_access_key_id="$AWS_ACCESS_KEY_ID" \
-      #   -var aws_access_secret_key="$AWS_SECRET_ACCESS_KEY" \
-      #   -var rds_password="$DB_PASSWORD" \
-      #   -var environment="$ENVIRONMENT"; then
-      #   echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
-      # else
-      #   echo "Error importing $TF_STATE. Skipping..."
-      #   continue
-      # fi
+      if terraform import $TF_STATE $RESOURCE_ID \
+        -var aws_profile="$AWS_PROFILE" \
+        -var github_token="$GITHUB_TOKEN" \
+        -var aws_region="$AWS_REGION" \
+        -var aws_access_key_id="$AWS_ACCESS_KEY_ID" \
+        -var aws_access_secret_key="$AWS_SECRET_ACCESS_KEY" \
+        -var rds_password="$DB_PASSWORD" \
+        -var environment="$ENVIRONMENT"; then
+        echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
+      else
+        echo "Error importing $TF_STATE. Skipping..."
+        continue
+      fi
       sleep 5
     done
   else
