@@ -92,8 +92,8 @@ for ARN in $RESOURCE_ARNS; do
 
   TF_STATE=$(terraform state list | grep "$TF_RESOURCE")
   if [ -n "$TF_STATE" ]; then
-    echo "Importing $TF_STATE...$ARN"
-    if terraform import $TF_STATE $RESOURCE_ID; then
+    echo "Importing $TF_STATE" "$RESOURCE_ID"
+    if terraform import "$TF_STATE" "$RESOURCE_ID"; then
       echo "Successfully imported $TF_STATE"
     else
       echo "Error importing $TF_STATE. Skipping..."

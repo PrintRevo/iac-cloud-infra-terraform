@@ -88,22 +88,22 @@ jobs:
       - name: Import Modules Services by Environment Tag
         run: ./bin/terraform-import.sh dev || echo "Import script failed but continuing..."
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
+      # - name: Set up Helm
+      #   uses: azure/setup-helm@v3
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan -var aws_profile=printrevo-terraform -var github_token='${{ secrets.GH_PAT }}' -var aws_region='${{ secrets.AWS_REGION }}' -var aws_access_key_id='${{ secrets.AWS_ACCESS_KEY_ID }}' -var aws_access_secret_key='${{ secrets.AWS_SECRET_ACCESS_KEY }}' -var rds_password='${{ steps.ssm.outputs.db_password }}'
+      # - name: Terraform Plan
+      #   run: terraform plan -out=tfplan -var aws_profile=printrevo-terraform -var github_token='${{ secrets.GH_PAT }}' -var aws_region='${{ secrets.AWS_REGION }}' -var aws_access_key_id='${{ secrets.AWS_ACCESS_KEY_ID }}' -var aws_access_secret_key='${{ secrets.AWS_SECRET_ACCESS_KEY }}' -var rds_password='${{ steps.ssm.outputs.db_password }}'
 
-      - name: Set execute permission for the apply script
-        run: chmod +x ./bin/terraform-apply.sh
+      # - name: Set execute permission for the apply script
+      #   run: chmod +x ./bin/terraform-apply.sh
 
-      - name: Run Terraform Apply
-        run: ./bin/terraform-apply.sh
+      # - name: Run Terraform Apply
+      #   run: ./bin/terraform-apply.sh
        
-      - name: Configure kubectl for EKS
-        run: |
-            aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name printrevo-dev-eks
-            kubectl get nodes
+      # - name: Configure kubectl for EKS
+      #   run: |
+      #       aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name printrevo-dev-eks
+      #       kubectl get nodes
 
-      - name: Helm Install
-        run: helm install printrevo-infra ./helm
+      # - name: Helm Install
+      #   run: helm install printrevo-infra ./helm
