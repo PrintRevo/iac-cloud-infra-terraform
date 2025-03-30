@@ -11,7 +11,7 @@ variable "aws_region" {
 variable "node_instance_type" {
   description = "The EC2 instance type for the EKS worker nodes"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "environment" {
@@ -22,13 +22,13 @@ variable "environment" {
 variable "desired_capacity" {
   description = "The desired number of worker nodes"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "min_size" {
   description = "The minimum number of worker nodes"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "max_size" {
