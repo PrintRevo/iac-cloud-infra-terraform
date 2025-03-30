@@ -94,6 +94,7 @@ for ARN in $RESOURCE_ARNS; do
     continue
     ;;
   esac
+  echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
   if terraform state list | grep -q "$TF_RESOURCE.$RESOURCE_ID"; then
     echo "Importing $TF_RESOURCE.$RESOURCE_ID...$ARN"
@@ -106,7 +107,7 @@ for ARN in $RESOURCE_ARNS; do
     continue
   fi
   sleep 1
-  
+
   # Read JSON files in ./datas/repository-definitions
   for FILE in ./modules/aws/ecr/repositories/*.json; do
     NAME=$(jq -r '.repo_name' "$FILE")
