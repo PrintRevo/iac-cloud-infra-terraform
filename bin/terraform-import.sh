@@ -97,7 +97,7 @@ for ARN in $RESOURCE_ARNS; do
   if [ -n "$TF_STATES" ]; then
     for TF_STATE in $TF_STATES; do
       echo "Importing $TF_STATE with ID $RESOURCE_ID"
-      if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN" \
+      if terraform import $TF_STATES $RESOURCE_ID \
         -var aws_profile="$AWS_PROFILE" \
         -var github_token="$GITHUB_TOKEN" \
         -var aws_region="$AWS_REGION" \
