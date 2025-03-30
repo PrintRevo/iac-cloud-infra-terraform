@@ -59,7 +59,7 @@ for ARN in $RESOURCE_ARNS; do
   instance)
     TF_RESOURCE="aws_instance"
     ;;
-  nodegroup)
+  printrevo-dev-eks-node-group)
     TF_RESOURCE="aws_eks_node_group"
     ;;
   vpc)
@@ -98,7 +98,7 @@ for ARN in $RESOURCE_ARNS; do
   fi
 
   # Read JSON files in ./datas/repository-definitions
-  for FILE in ./modules/ecr/repositories/*.json; do
+  for FILE in ./modules/aws/ecr/repositories/*.json; do
     NAME=$(jq -r '.repo_name' "$FILE")
     if terraform state list | grep -q "$NAME"; then
       echo "Resource $NAME already managed by Terraform. Skipping import."
