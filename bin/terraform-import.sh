@@ -3,6 +3,12 @@
 set -e # Exit on error
 
 ENVIRONMENT=$1
+AWS_PROFILE=$2
+GITHUB_TOKEN=$3
+AWS_REGION=$4
+AWS_ACCESS_KEY_ID=$5
+AWS_SECRET_ACCESS_KEY=$6
+DB_PASSWORD=$7
 
 if [ -z "$ENVIRONMENT" ]; then
   echo "Error: Environment variable not provided."
@@ -23,9 +29,6 @@ echo "Importing resources into Terraform..."
 
 # Loop through each existing ARN and import it into Terraform
 for ARN in $RESOURCE_ARNS; do
-  #   RESOURCE_TYPE=$(echo "$ARN" | cut -d':' -f3)  # Extract AWS service type
-  #   RESOURCE_PATH=$(echo "$ARN" | cut -d':' -f6-)  # Extract resource path
-  #   RESOURCE_ID=$(echo "$RESOURCE_PATH" | awk -F'[:/]' '{print $NF}')  # Extract last part of resource ID
 
   RESOURCE_TYPE=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+:([^\/]+).*/\1/')
   RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
@@ -94,7 +97,7 @@ for ARN in $RESOURCE_ARNS; do
   if [ -n "$TF_STATES" ]; then
     for TF_STATE in $TF_STATES; do
       echo "Importing $TF_STATE with ID $RESOURCE_ID"
-      if terraform import "$TF_STATE" "$RESOURCE_ID"; then
+      if terraform import "$TF_STATE" "$RESOURCE_ID" -var aws_profile=printrevo-terraform -var github_token="$GITHUB_TOKEN" -var aws_region="$AWS_REGION" -var aws_access_key_id="$AWS_ACCESS_KEY_ID" -var aws_access_secret_key="$AWS_SECRET_ACCESS_KEY" -var rds_password="$DB_PASSWORD"; then
         echo "Successfully imported $TF_STATE"
       else
         echo "Error importing $TF_STATE. Skipping..."
