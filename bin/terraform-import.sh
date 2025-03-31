@@ -62,12 +62,6 @@ for FILE in ./modules/github/repositories/*.json; do
   GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
   echo "Importing GitHub repository $NAME with ID $GITHUB_RESOURCE_ID..."
 
-  # Ensure the resource configuration exists in Terraform before importing
-  if ! grep -q "github_repository \"$NAME\"" ./modules/github/repositories/main.tf; then
-    echo "Error: Resource configuration for $NAME does not exist in Terraform. Please add it before importing."
-    continue
-  fi
-
   terraform import "module.github_repositories.github_repository.github_repos[\"$NAME\"]" "$GITHUB_RESOURCE_ID"
 done
 
