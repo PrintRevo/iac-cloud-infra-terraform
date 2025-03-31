@@ -80,46 +80,46 @@ for ARN in $RESOURCE_ARNS; do
   cluster)
     TF_RESOURCE="aws_eks_cluster"
     ;;
-  #     # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
-  #     # TF_RESOURCE="aws_s3_bucket"
-  #     # ;;
-  #   sqs)
-  #     TF_RESOURCE="aws_sqs_queue"
-  #     ;;
-  #     # "printrevo-event-messages-queue")
-  #     # TF_RESOURCE="aws_sqs_queue"
-  #     # ;;
-  #     # db | "db:printrevo-$ENVIRONMENT-db")
-  #     # TF_RESOURCE="aws_db_instance"
-  #     # ;;
-  #   subgrp)
-  #     TF_RESOURCE="aws_db_subnet_group"
-  #     ;;
-  #   iam)
-  #     TF_RESOURCE="aws_iam_role"
-  #     ;;
-  #   # ec2 | instance)
-  #   #   TF_RESOURCE="aws_instance"
-  #   #   ;;
-  #   nodegroup)
-  #     TF_RESOURCE="aws_eks_node_group"
-  #     ;;
-  #   subnet)
-  #     TF_RESOURCE="aws_subnet"
-  #     ;;
-  #   security-group)
-  #     TF_RESOURCE="aws_security_group"
-  #     ;;
-  #   route-table)
-  #     TF_RESOURCE="aws_route_table"
-  #     ;;
-  #   internet-gateway)
-  #     TF_RESOURCE="aws_internet_gateway"
-  #     ;;
-  #   *)
-  #     echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
-  #     continue
-  #     ;;
+    #     # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
+    #     # TF_RESOURCE="aws_s3_bucket"
+    #     # ;;
+    #   sqs)
+    #     TF_RESOURCE="aws_sqs_queue"
+    #     ;;
+    #     # "printrevo-event-messages-queue")
+    #     # TF_RESOURCE="aws_sqs_queue"
+    #     # ;;
+    #     # db | "db:printrevo-$ENVIRONMENT-db")
+    #     # TF_RESOURCE="aws_db_instance"
+    #     # ;;
+    #   subgrp)
+    #     TF_RESOURCE="aws_db_subnet_group"
+    #     ;;
+    #   iam)
+    #     TF_RESOURCE="aws_iam_role"
+    #     ;;
+    #   # ec2 | instance)
+    #   #   TF_RESOURCE="aws_instance"
+    #   #   ;;
+    #   nodegroup)
+    #     TF_RESOURCE="aws_eks_node_group"
+    #     ;;
+    #   subnet)
+    #     TF_RESOURCE="aws_subnet"
+    #     ;;
+    #   security-group)
+    #     TF_RESOURCE="aws_security_group"
+    #     ;;
+    #   route-table)
+    #     TF_RESOURCE="aws_route_table"
+    #     ;;
+  internet-gateway)
+    TF_RESOURCE="aws_internet_gateway"
+    ;;
+  *)
+    # echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
+    continue
+    ;;
   esac
   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
   echo "$TF_RESOURCE with ID: $RESOURCE_ID"
