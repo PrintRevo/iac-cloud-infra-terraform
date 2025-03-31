@@ -69,7 +69,7 @@ for FILE in ./modules/github/repositories/*.json; do
   fi
 
   terraform import "module.github_repositories.github_repository.github_repos[\"$NAME\"]" "$GITHUB_RESOURCE_ID"
-# done
+done
 
 # Loop through each existing ARN and import it into Terraform
 # for ARN in $RESOURCE_ARNS; do
