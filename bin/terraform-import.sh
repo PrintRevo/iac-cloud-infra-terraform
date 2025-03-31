@@ -80,9 +80,9 @@ for ARN in $RESOURCE_ARNS; do
   cluster)
     TF_RESOURCE="aws_eks_cluster"
     ;;
-    #     # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
-    #     # TF_RESOURCE="aws_s3_bucket"
-    #     # ;;
+  s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
+    TF_RESOURCE="aws_s3_bucket"
+    ;;
     #   sqs)
     #     TF_RESOURCE="aws_sqs_queue"
     #     ;;
