@@ -72,16 +72,14 @@ for ARN in $RESOURCE_ARNS; do
   RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
   RESOURCE_ID=$(echo "$RESOURCE_PATH" | grep -oE '[^/]+$')
 
-  echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
-
   # Determine Terraform resource type dynamically
-  #   case $RESOURCE_TYPE in
-  #   vpc)
-  #     TF_RESOURCE="aws_vpc"
-  #     ;;
-  #   cluster)
-  #     TF_RESOURCE="aws_eks_cluster"
-  #     ;;
+  case $RESOURCE_TYPE in
+  vpc)
+    TF_RESOURCE="aws_vpc"
+    ;;
+  cluster)
+    TF_RESOURCE="aws_eks_cluster"
+    ;;
   #     # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
   #     # TF_RESOURCE="aws_s3_bucket"
   #     # ;;
@@ -122,8 +120,9 @@ for ARN in $RESOURCE_ARNS; do
   #     echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
   #     continue
   #     ;;
-  #   esac
-  #   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
+  esac
+  echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
+  echo "$TF_RESOURCE with ID: $RESOURCE_ID"
 
   #   TF_STATE=$(terraform state list | grep "$TF_RESOURCE" | grep "$RESOURCE_ID")
   #   echo "Debug: TF_STATE=$TF_STATE"
