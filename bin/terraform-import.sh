@@ -125,13 +125,13 @@ for ARN in $RESOURCE_ARNS; do
   echo "$TF_RESOURCE with ID: $RESOURCE_ID"
   TF_STATE=$(terraform state list | grep $TF_RESOURCE)
   echo "Debug: TF_STATE=$TF_STATE"
-  
-  #   # if [ -n "$TF_STATE" ]; then
-  #   #   echo "Resource $TF_STATE already managed by Terraform. Skipping import."
-  #   #   continue
-  #   # fi
 
-  #   # echo "Importing $TF_RESOURCE with ID $RESOURCE_ID..."
+  if [ -n "$TF_STATE" ]; then
+    echo "Resource $TF_STATE already managed by Terraform. Skipping import."
+    continue
+  fi
+
+  #   w..."
   #   # if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
   #   #   echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
   #   # else
