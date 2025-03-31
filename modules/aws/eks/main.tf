@@ -82,7 +82,12 @@ resource "aws_eks_node_group" "eks_cluster_node_group" {
     min_size     = var.min_size
   }
 
-  depends_on = [aws_eks_cluster.eks_cluster]
+  depends_on = [
+    aws_eks_cluster.eks_cluster,
+    aws_iam_role_policy_attachment.example-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.example-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly
+  ]
   tags = {
     Environment = var.environment
     Schedule    = "EKSInstanceSchedule"
