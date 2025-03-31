@@ -22,19 +22,19 @@ variable "environment" {
 variable "desired_capacity" {
   description = "The desired number of worker nodes"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "min_size" {
   description = "The minimum number of worker nodes"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "max_size" {
   description = "The maximum number of worker nodes"
   type        = number
-  default     = 4
+  default     = 5
 }
 
 variable "vpc_id" {
