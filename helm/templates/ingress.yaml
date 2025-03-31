@@ -8,7 +8,8 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/subnets: subnet-09488af89dc7cd366,subnet-03940441c7dc8ab19
-#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/load-balancer-name: "{{ .Values.app.name }}-alb"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
 #     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certificateArn }}
 #     alb.ingress.kubernetes.io/ssl-redirect: '443'
 #     alb.ingress.kubernetes.io/healthcheck-path: /health

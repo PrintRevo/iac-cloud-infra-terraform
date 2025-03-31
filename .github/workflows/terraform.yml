@@ -102,6 +102,19 @@ jobs:
             aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name printrevo-dev-eks
             kubectl get nodes
 
+      - name: "Add EKS Chart Repo"
+        run: |
+          helm repo add eks https://aws.github.io/eks-charts
+          helm repo update
+
+      - name: "Install AWS ALB"
+        run: |
+          helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+            -n kube-system \
+            --set clusterName=printrevo-dev-eks \
+            --set serviceAccount.create=false \
+            --set serviceAccount.name=aws-load-balancer-controller
+
       - name: Helm Install
         run: |
           helm upgrade --install printrevo-infra ./helm --namespace infrastructure --create-namespace
