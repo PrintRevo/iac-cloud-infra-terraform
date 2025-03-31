@@ -55,8 +55,8 @@ done
 # Read GitHub repository definitions from JSON files
 for FILE in ./modules/github/repositories/*.json; do
   NAME=$(jq -r '.name' "$FILE")
-  if terraform state list | grep "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
-    echo "Resource $NAME already managed by Terraform. Skipping import."
+  if ! terraform state list | grep -q "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
+    echo "Error: Resource $NAME is not defined in the Terraform configuration. Skipping..."
     continue
   fi
   GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
