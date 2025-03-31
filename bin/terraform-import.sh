@@ -131,22 +131,18 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
-  TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
-  echo $TF_STATES
-  if [ -n "$TF_STATES" ]; then
-    IFS=$'\n' read -rd '' -a TF_STATE_ARRAY <<<"$TF_STATES"
-    echo "Matching Terraform states found for $TF_RESOURCE: ${TF_STATE_ARRAY[@]}"
-    # for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
-    #   echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
-    #   # Uncomment the following block to enable actual import
-    #   if terraform import $TF_STATE $RESOURCE_ID; then
-    #     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
-    #   else
-    #     echo "Error importing $TF_STATE. Skipping..."
-    #   fi
-    # done
+  TF_STATE=$(terraform state list | grep "$TF_RESOURCE" | grep "$RESOURCE_ID")
+  echo "Debug: TF_STATE=$TF_STATE"
+  if [ -n "$TF_STATE" ]; then
+    echo "Resource $TF_STATE already managed by Terraform. Skipping import."
+    continue
+  fi
+
+  echo "Importing $TF_RESOURCE with ID $RESOURCE_ID..."
+  if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
+    echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
   else
-    echo "No matching state found for $TF_RESOURCE. Skipping import."
+    echo "Error importing $TF_RESOURCE with ID $RESOURCE_ID. Skipping..."
   fi
 
 done
