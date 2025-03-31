@@ -8,7 +8,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.containerPort }}
+    - port: 80
+      targetPort: {{ .Values.service.port }}
   selector:
     app: {{ .Values.app.name }}
