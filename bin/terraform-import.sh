@@ -36,6 +36,37 @@ export TF_VAR_environment="$ENVIRONMENT"
 
 echo "Importing resources into Terraform..."
 
+# Read JSON files in ./datas/repository-definitions
+for FILE in ./modules/aws/ecr/repositories/*.json; do
+  NAME=$(jq -r '.repo_name' "$FILE")
+  if terraform state list | grep -q "$NAME"; then
+    echo "Resource $NAME already managed by Terraform. Skipping import."
+    continue
+  fi
+  ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
+  echo "Importing ECR $NAME. Importing to ensure consistency...$ECR_RESOURCE_ID"
+  terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
+done
+
+# Read GitHub repository definitions from JSON files
+for FILE in ./modules/github/repositories/*.json; do
+  NAME=$(jq -r '.name' "$FILE")
+  if terraform state list | grep -q "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
+    echo "Resource $NAME already managed by Terraform. Skipping import."
+    continue
+  fi
+  GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
+  echo "Importing GitHub repository $NAME with ID $GITHUB_RESOURCE_ID..."
+  
+  # Ensure the resource configuration exists in Terraform before importing
+  if ! grep -q "github_repository \"$NAME\"" ./modules/github/repositories/main.tf; then
+    echo "Error: Resource configuration for $NAME does not exist in Terraform. Please add it before importing."
+    continue
+  fi
+
+  terraform import "module.github_repositories.github_repository.github_repos[\"$NAME\"]" "$GITHUB_RESOURCE_ID"
+done
+
 # Loop through each existing ARN and import it into Terraform
 for ARN in $RESOURCE_ARNS; do
 
@@ -96,42 +127,23 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
-  # Read JSON files in ./datas/repository-definitions
-  for FILE in ./modules/aws/ecr/repositories/*.json; do
-    NAME=$(jq -r '.repo_name' "$FILE")
-    if terraform state list | grep -q "$NAME"; then
-      echo "Resource $NAME already managed by Terraform. Skipping import."
-      continue
-    fi
-    ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
-    echo "Importing ECR $NAME. Importing to ensure consistency...$ECR_RESOURCE_ID"
-    terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
-  done
-
   TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
   echo $TF_STATES
   if [ -n "$TF_STATES" ]; then
     IFS=$'\n' read -rd '' -a TF_STATE_ARRAY <<<"$TF_STATES"
-    for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
-      echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
-      # Uncomment the following block to enable actual import
-      if terraform import $TF_STATE $RESOURCE_ID; then
-        echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
-      else
-        echo "Error importing $TF_STATE. Skipping..."
-      fi
-    done
+    echo "Matching Terraform states found for $TF_RESOURCE: ${TF_STATE_ARRAY[@]}"
+    # for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
+    #   echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
+    #   # Uncomment the following block to enable actual import
+    #   if terraform import $TF_STATE $RESOURCE_ID; then
+    #     echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
+    #   else
+    #     echo "Error importing $TF_STATE. Skipping..."
+    #   fi
+    # done
   else
     echo "No matching state found for $TF_RESOURCE. Skipping import."
   fi
-
-  for FILE in ./datas/repository-definitions/*.json; do
-    NAME=$(jq -r '.name' "$FILE")
-    if terraform state list | grep "$NAME"; then
-      echo "Resource $NAME already managed by Terraform. Skipping import."
-      continue 2
-    fi
-  done
 
 done
 
