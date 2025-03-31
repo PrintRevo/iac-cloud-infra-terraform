@@ -105,8 +105,3 @@ jobs:
       - name: Helm Install
         run: |
           helm upgrade --install printrevo-infra ./helm --namespace infrastructure --create-namespace
-          # if helm status printrevo-infra >/dev/null 2>&1; then
-          #   helm upgrade printrevo-infra ./helm
-          # else
-          #   helm install printrevo-infra ./helm
-          # fi
