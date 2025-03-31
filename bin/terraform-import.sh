@@ -55,7 +55,7 @@ done
 # Read GitHub repository definitions from JSON files
 for FILE in ./modules/github/repositories/*.json; do
   NAME=$(jq -r '.name' "$FILE")
-  if ! terraform state list | grep -q "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
+  if ! terraform state list | grep "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
     echo "Error: Resource $NAME is not defined in the Terraform configuration. Skipping..."
     continue
   fi
