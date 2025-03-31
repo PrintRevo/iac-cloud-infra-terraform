@@ -81,13 +81,13 @@ module "lambda_functions" {
   instance_ids = module.eks_cluster.eks_node_instance_ids
 }
 
-# module "github_repositories" {
-#   source = "./modules/github"
+module "github_repositories" {
+  source = "./modules/github"
 
-#   organization = "PrintRevo"
+  organization = "PrintRevo"
 
-#   aws_profile           = var.aws_profile
-#   aws_access_key_id     = var.aws_access_key_id
-#   aws_secret_access_key = var.aws_access_secret_key
-#   auto_init             = true
-# }
+  aws_profile           = var.aws_profile
+  aws_access_key_id     = var.aws_access_key_id
+  aws_secret_access_key = var.aws_access_secret_key
+  auto_init             = true
+}
