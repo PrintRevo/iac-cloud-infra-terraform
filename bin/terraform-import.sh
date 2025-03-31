@@ -72,79 +72,79 @@ done
 # done
 
 # Loop through each existing ARN and import it into Terraform
-for ARN in $RESOURCE_ARNS; do
+# for ARN in $RESOURCE_ARNS; do
 
-  RESOURCE_TYPE=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+:([^\/]+).*/\1/')
-  RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
-  RESOURCE_ID=$(echo "$RESOURCE_PATH" | grep -oE '[^/]+$')
+#   RESOURCE_TYPE=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+:([^\/]+).*/\1/')
+#   RESOURCE_PATH=$(echo "$ARN" | sed -E 's/^arn:aws:[^:]+:[^:]+:[0-9]+://')
+#   RESOURCE_ID=$(echo "$RESOURCE_PATH" | grep -oE '[^/]+$')
 
-  echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
+#   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
 
-  # Determine Terraform resource type dynamically
-  case $RESOURCE_TYPE in
-  vpc)
-    TF_RESOURCE="aws_vpc"
-    ;;
-  cluster)
-    TF_RESOURCE="aws_eks_cluster"
-    ;;
-    # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
-    # TF_RESOURCE="aws_s3_bucket"
-    # ;;
-  sqs)
-    TF_RESOURCE="aws_sqs_queue"
-    ;;
-    # "printrevo-event-messages-queue")
-    # TF_RESOURCE="aws_sqs_queue"
-    # ;;
-    # db | "db:printrevo-$ENVIRONMENT-db")
-    # TF_RESOURCE="aws_db_instance"
-    # ;;
-  subgrp)
-    TF_RESOURCE="aws_db_subnet_group"
-    ;;
-  iam)
-    TF_RESOURCE="aws_iam_role"
-    ;;
-  # ec2 | instance)
-  #   TF_RESOURCE="aws_instance"
-  #   ;;
-  nodegroup)
-    TF_RESOURCE="aws_eks_node_group"
-    ;;
-  subnet)
-    TF_RESOURCE="aws_subnet"
-    ;;
-  security-group)
-    TF_RESOURCE="aws_security_group"
-    ;;
-  route-table)
-    TF_RESOURCE="aws_route_table"
-    ;;
-  internet-gateway)
-    TF_RESOURCE="aws_internet_gateway"
-    ;;
-  *)
-    echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
-    continue
-    ;;
-  esac
-  echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
+#   # Determine Terraform resource type dynamically
+#   case $RESOURCE_TYPE in
+#   vpc)
+#     TF_RESOURCE="aws_vpc"
+#     ;;
+#   cluster)
+#     TF_RESOURCE="aws_eks_cluster"
+#     ;;
+#     # s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
+#     # TF_RESOURCE="aws_s3_bucket"
+#     # ;;
+#   sqs)
+#     TF_RESOURCE="aws_sqs_queue"
+#     ;;
+#     # "printrevo-event-messages-queue")
+#     # TF_RESOURCE="aws_sqs_queue"
+#     # ;;
+#     # db | "db:printrevo-$ENVIRONMENT-db")
+#     # TF_RESOURCE="aws_db_instance"
+#     # ;;
+#   subgrp)
+#     TF_RESOURCE="aws_db_subnet_group"
+#     ;;
+#   iam)
+#     TF_RESOURCE="aws_iam_role"
+#     ;;
+#   # ec2 | instance)
+#   #   TF_RESOURCE="aws_instance"
+#   #   ;;
+#   nodegroup)
+#     TF_RESOURCE="aws_eks_node_group"
+#     ;;
+#   subnet)
+#     TF_RESOURCE="aws_subnet"
+#     ;;
+#   security-group)
+#     TF_RESOURCE="aws_security_group"
+#     ;;
+#   route-table)
+#     TF_RESOURCE="aws_route_table"
+#     ;;
+#   internet-gateway)
+#     TF_RESOURCE="aws_internet_gateway"
+#     ;;
+#   *)
+#     echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
+#     continue
+#     ;;
+#   esac
+#   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
-  TF_STATE=$(terraform state list | grep "$TF_RESOURCE" | grep "$RESOURCE_ID")
-  echo "Debug: TF_STATE=$TF_STATE"
-  # if [ -n "$TF_STATE" ]; then
-  #   echo "Resource $TF_STATE already managed by Terraform. Skipping import."
-  #   continue
-  # fi
+#   TF_STATE=$(terraform state list | grep "$TF_RESOURCE" | grep "$RESOURCE_ID")
+#   echo "Debug: TF_STATE=$TF_STATE"
+#   # if [ -n "$TF_STATE" ]; then
+#   #   echo "Resource $TF_STATE already managed by Terraform. Skipping import."
+#   #   continue
+#   # fi
 
-  # echo "Importing $TF_RESOURCE with ID $RESOURCE_ID..."
-  # if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
-  #   echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
-  # else
-  #   echo "Error importing $TF_RESOURCE with ID $RESOURCE_ID. Skipping..."
-  # fi
+#   # echo "Importing $TF_RESOURCE with ID $RESOURCE_ID..."
+#   # if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
+#   #   echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
+#   # else
+#   #   echo "Error importing $TF_RESOURCE with ID $RESOURCE_ID. Skipping..."
+#   # fi
 
-done
+# done
 
 echo "Terraform import completed successfully!"
