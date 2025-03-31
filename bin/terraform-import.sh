@@ -101,7 +101,7 @@ for ARN in $RESOURCE_ARNS; do
   ec2 | instance)
     TF_RESOURCE="aws_instance"
     ;;
-  nodegroup)
+  nodegroup | "nodegroup/printrevo-dev-eks/printrevo-$ENVIRONMENT-eks-node-group" | "printrevo-dev-eks/printrevo-$ENVIRONMENT-eks-node-group" | "printrevo-$ENVIRONMENT-eks-node-group")
     TF_RESOURCE="aws_eks_node_group"
     ;;
   subnet)
