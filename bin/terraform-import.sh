@@ -19,7 +19,7 @@ fi
 echo "Fetching AWS resources tagged with Environment=$ENVIRONMENT..."
 # Fetch resource ARNs tagged with the specified environment
 RESOURCE_ARNS=$(aws resourcegroupstaggingapi get-resources --tag-filters Key=Environment,Values=$ENVIRONMENT --output json | jq -r '.ResourceTagMappingList[].ResourceARN')
-
+echo "Debug: RESOURCE_ARNS=$RESOURCE_ARNS"
 if [ -z "$RESOURCE_ARNS" ]; then
   echo "No resources found for Environment=$ENVIRONMENT"
   exit 0
@@ -39,11 +39,15 @@ echo "Importing resources into Terraform..."
 # Read JSON files in ./datas/repository-definitions
 for FILE in ./modules/aws/ecr/repositories/*.json; do
   NAME=$(jq -r '.repo_name' "$FILE")
-  if terraform state list | grep -q "$NAME"; then
+  if terraform state list | grep "$NAME"; then
     echo "Resource $NAME already managed by Terraform. Skipping import."
     continue
   fi
-  ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
+  ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text 2>/dev/null)
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to fetch ECR resource ID for $NAME. Skipping..."
+    continue
+  fi
   echo "Importing ECR $NAME. Importing to ensure consistency...$ECR_RESOURCE_ID"
   terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
 done
@@ -57,7 +61,7 @@ done
 #   fi
 #   GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
 #   echo "Importing GitHub repository $NAME with ID $GITHUB_RESOURCE_ID..."
-  
+
 #   # Ensure the resource configuration exists in Terraform before importing
 #   if ! grep -q "github_repository \"$NAME\"" ./modules/github/repositories/main.tf; then
 #     echo "Error: Resource configuration for $NAME does not exist in Terraform. Please add it before importing."
