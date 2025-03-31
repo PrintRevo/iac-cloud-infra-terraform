@@ -100,10 +100,12 @@ for ARN in $RESOURCE_ARNS; do
   for FILE in ./modules/aws/ecr/repositories/*.json; do
     NAME=$(jq -r '.repo_name' "$FILE")
     if terraform state list | grep -q "$NAME"; then
-      ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
-      echo "Importing ECR $NAME managed by Terraform. Importing to ensure consistency...$ECR_RESOURCE_ID"
-      terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
+      echo "Resource $NAME already managed by Terraform. Skipping import."
+      continue
     fi
+    ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
+    echo "Importing ECR $NAME. Importing to ensure consistency...$ECR_RESOURCE_ID"
+    terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
   done
 
   TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
