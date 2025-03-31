@@ -131,12 +131,11 @@ for ARN in $RESOURCE_ARNS; do
     continue
   fi
 
-  #   w..."
-  #   # if terraform import "$TF_RESOURCE.$RESOURCE_ID" "$ARN"; then
-  #   #   echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
-  #   # else
-  #   #   echo "Error importing $TF_RESOURCE with ID $RESOURCE_ID. Skipping..."
-  #   # fi
+  if terraform import "$TF_RESOURCE" "$RESOURCE_ID"; then
+    echo "Successfully imported $TF_RESOURCE with ID $RESOURCE_ID"
+  else
+    echo "Error importing $TF_RESOURCE with ID $RESOURCE_ID. Skipping..."
+  fi
 
 done
 
