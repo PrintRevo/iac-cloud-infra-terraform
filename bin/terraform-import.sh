@@ -101,18 +101,18 @@ for ARN in $RESOURCE_ARNS; do
     #   # ec2 | instance)
     #   #   TF_RESOURCE="aws_instance"
     #   #   ;;
-    #   nodegroup)
-    #     TF_RESOURCE="aws_eks_node_group"
-    #     ;;
-    #   subnet)
-    #     TF_RESOURCE="aws_subnet"
-    #     ;;
-    #   security-group)
-    #     TF_RESOURCE="aws_security_group"
-    #     ;;
-    #   route-table)
-    #     TF_RESOURCE="aws_route_table"
-    #     ;;
+  nodegroup)
+    TF_RESOURCE="aws_eks_node_group"
+    ;;
+  subnet)
+    TF_RESOURCE="aws_subnet"
+    ;;
+  security-group)
+    TF_RESOURCE="aws_security_group"
+    ;;
+  route-table)
+    TF_RESOURCE="aws_route_table"
+    ;;
   internet-gateway)
     TF_RESOURCE="aws_internet_gateway"
     ;;
