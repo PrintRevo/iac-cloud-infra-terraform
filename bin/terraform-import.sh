@@ -123,9 +123,9 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Identified resource: Type=$RESOURCE_TYPE, ID=$RESOURCE_ID"
   echo "$TF_RESOURCE with ID: $RESOURCE_ID"
-
-  #   TF_STATE=$(terraform state list | grep "$TF_RESOURCE" | grep "$RESOURCE_ID")
-  #   echo "Debug: TF_STATE=$TF_STATE"
+  TF_STATE=$(terraform state list | grep $TF_RESOURCE)
+  echo "Debug: TF_STATE=$TF_STATE"
+  
   #   # if [ -n "$TF_STATE" ]; then
   #   #   echo "Resource $TF_STATE already managed by Terraform. Skipping import."
   #   #   continue
