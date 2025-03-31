@@ -53,22 +53,22 @@ for FILE in ./modules/aws/ecr/repositories/*.json; do
 done
 
 # Read GitHub repository definitions from JSON files
-# for FILE in ./modules/github/repositories/*.json; do
-#   NAME=$(jq -r '.name' "$FILE")
-#   if terraform state list | grep -q "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
-#     echo "Resource $NAME already managed by Terraform. Skipping import."
-#     continue
-#   fi
-#   GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
-#   echo "Importing GitHub repository $NAME with ID $GITHUB_RESOURCE_ID..."
+for FILE in ./modules/github/repositories/*.json; do
+  NAME=$(jq -r '.name' "$FILE")
+  if terraform state list | grep -q "module.github_repositories.github_repository.github_repos[\"$NAME\"]"; then
+    echo "Resource $NAME already managed by Terraform. Skipping import."
+    continue
+  fi
+  GITHUB_RESOURCE_ID=$(gh api repos/:owner/:repo --jq '.id' --header "Authorization: token $GITHUB_TOKEN" --raw-field owner=$(jq -r '.owner' "$FILE") --raw-field repo="$NAME")
+  echo "Importing GitHub repository $NAME with ID $GITHUB_RESOURCE_ID..."
 
-#   # Ensure the resource configuration exists in Terraform before importing
-#   if ! grep -q "github_repository \"$NAME\"" ./modules/github/repositories/main.tf; then
-#     echo "Error: Resource configuration for $NAME does not exist in Terraform. Please add it before importing."
-#     continue
-#   fi
+  # Ensure the resource configuration exists in Terraform before importing
+  if ! grep -q "github_repository \"$NAME\"" ./modules/github/repositories/main.tf; then
+    echo "Error: Resource configuration for $NAME does not exist in Terraform. Please add it before importing."
+    continue
+  fi
 
-#   terraform import "module.github_repositories.github_repository.github_repos[\"$NAME\"]" "$GITHUB_RESOURCE_ID"
+  terraform import "module.github_repositories.github_repository.github_repos[\"$NAME\"]" "$GITHUB_RESOURCE_ID"
 # done
 
 # Loop through each existing ARN and import it into Terraform
