@@ -83,24 +83,24 @@ for ARN in $RESOURCE_ARNS; do
   s3 | "arn:aws:s3:::printrevo-bucket-$ENVIRONMENT")
     TF_RESOURCE="aws_s3_bucket"
     ;;
-    #   sqs)
-    #     TF_RESOURCE="aws_sqs_queue"
-    #     ;;
-    #     # "printrevo-event-messages-queue")
-    #     # TF_RESOURCE="aws_sqs_queue"
-    #     # ;;
-    #     # db | "db:printrevo-$ENVIRONMENT-db")
-    #     # TF_RESOURCE="aws_db_instance"
-    #     # ;;
-    #   subgrp)
-    #     TF_RESOURCE="aws_db_subnet_group"
-    #     ;;
-    #   iam)
-    #     TF_RESOURCE="aws_iam_role"
-    #     ;;
-    #   # ec2 | instance)
-    #   #   TF_RESOURCE="aws_instance"
-    #   #   ;;
+  sqs)
+    TF_RESOURCE="aws_sqs_queue"
+    ;;
+  "printrevo-event-messages-queue")
+    TF_RESOURCE="aws_sqs_queue"
+    ;;
+  db | "db:printrevo-$ENVIRONMENT-db")
+    TF_RESOURCE="aws_db_instance"
+    ;;
+  subgrp)
+    TF_RESOURCE="aws_db_subnet_group"
+    ;;
+  iam)
+    TF_RESOURCE="aws_iam_role"
+    ;;
+  ec2 | instance)
+    TF_RESOURCE="aws_instance"
+    ;;
   nodegroup)
     TF_RESOURCE="aws_eks_node_group"
     ;;
