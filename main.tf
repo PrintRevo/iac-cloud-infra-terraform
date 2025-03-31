@@ -84,7 +84,7 @@ module "lambda_functions" {
 module "github_repositories" {
   source = "./modules/github"
 
-  organization     = "PrintRevo"
+  organization = "PrintRevo"
 
   aws_profile           = var.aws_profile
   aws_access_key_id     = var.aws_access_key_id
