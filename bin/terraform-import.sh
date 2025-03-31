@@ -25,6 +25,15 @@ if [ -z "$RESOURCE_ARNS" ]; then
   exit 0
 fi
 
+# Set AWS credentials and other variables for Terraform
+export TF_VAR_aws_profile="$AWS_PROFILE"
+export TF_VAR_github_token="$GITHUB_TOKEN"
+export TF_VAR_aws_region="$AWS_REGION"
+export TF_VAR_aws_access_key_id="$AWS_ACCESS_KEY_ID"
+export TF_VAR_aws_access_secret_key="$AWS_SECRET_ACCESS_KEY"
+export TF_VAR_rds_password="$DB_PASSWORD"
+export TF_VAR_environment="$ENVIRONMENT"
+
 echo "Importing resources into Terraform..."
 
 # Loop through each existing ARN and import it into Terraform
@@ -62,10 +71,7 @@ for ARN in $RESOURCE_ARNS; do
   iam)
     TF_RESOURCE="aws_iam_role"
     ;;
-  ec2)
-    TF_RESOURCE="aws_instance"
-    ;;
-  instance)
+  ec2 | instance)
     TF_RESOURCE="aws_instance"
     ;;
   nodegroup)
@@ -83,9 +89,6 @@ for ARN in $RESOURCE_ARNS; do
   internet-gateway)
     TF_RESOURCE="aws_internet_gateway"
     ;;
-  # repository)
-  #   TF_RESOURCE="aws_ecr_repository"
-  #   ;;
   *)
     echo "Skipping unsupported resource type: $RESOURCE_TYPE with ID: $RESOURCE_ID"
     continue
@@ -93,48 +96,40 @@ for ARN in $RESOURCE_ARNS; do
   esac
   echo "Found: $RESOURCE_TYPE with ID: $RESOURCE_ID"
 
+  # Read JSON files in ./datas/repository-definitions
+  for FILE in ./modules/aws/ecr/repositories/*.json; do
+    NAME=$(jq -r '.repo_name' "$FILE")
+    if terraform state list | grep -q "$NAME"; then
+      ECR_RESOURCE_ID=$(aws ecr describe-repositories --repository-names "$NAME" --query 'repositories[0].repositoryArn' --output text)
+      echo "Importing ECR $NAME managed by Terraform. Importing to ensure consistency...$ECR_RESOURCE_ID"
+      terraform import "module.ecr_repositories.aws_ecr_repository.ecr_repos[\"$NAME\"]" "$ECR_RESOURCE_ID"
+    fi
+  done
+
   TF_STATES=$(terraform state list | grep "$TF_RESOURCE")
+  echo $TF_STATES
   if [ -n "$TF_STATES" ]; then
     IFS=$'\n' read -rd '' -a TF_STATE_ARRAY <<<"$TF_STATES"
     for TF_STATE in "${TF_STATE_ARRAY[@]}"; do
       echo "Importing.... $TF_STATE with ID $RESOURCE_ID"
       # Uncomment the following block to enable actual import
-      if terraform import $TF_STATE $RESOURCE_ID \
-        -var aws_profile="$AWS_PROFILE" \
-        -var github_token="$GITHUB_TOKEN" \
-        -var aws_region="$AWS_REGION" \
-        -var aws_access_key_id="$AWS_ACCESS_KEY_ID" \
-        -var aws_access_secret_key="$AWS_SECRET_ACCESS_KEY" \
-        -var rds_password="$DB_PASSWORD" \
-        -var environment="$ENVIRONMENT"; then
+      if terraform import $TF_STATE $RESOURCE_ID; then
         echo "Successfully imported $TF_RESOURCE.$RESOURCE_ID"
       else
         echo "Error importing $TF_STATE. Skipping..."
-        continue
       fi
-      sleep 5
     done
   else
     echo "No matching state found for $TF_RESOURCE. Skipping import."
-    continue
   fi
 
-  # Read JSON files in ./datas/repository-definitions
-  for FILE in ./modules/aws/ecr/repositories/*.json; do
-    NAME=$(jq -r '.repo_name' "$FILE")
-    if terraform state list | grep -q "$NAME"; then
+  for FILE in ./datas/repository-definitions/*.json; do
+    NAME=$(jq -r '.name' "$FILE")
+    if terraform state list | grep "$NAME"; then
       echo "Resource $NAME already managed by Terraform. Skipping import."
       continue 2
     fi
   done
-
-  # for FILE in ./datas/repository-definitions/*.json; do
-  #   NAME=$(jq -r '.name' "$FILE")
-  #   if terraform state list | grep "$NAME"; then
-  #     echo "Resource $NAME already managed by Terraform. Skipping import."
-  #     continue 2
-  #   fi
-  # done
 
 done
 
