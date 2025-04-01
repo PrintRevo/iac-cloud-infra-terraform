@@ -86,10 +86,10 @@ for ARN in $RESOURCE_ARNS; do
   sqs)
     TF_RESOURCE="aws_sqs_queue"
     ;;
-  "printrevo-event-messages-queue")
+  'printrevo-event-messages-queue')
     TF_RESOURCE="aws_sqs_queue"
     ;;
-  db | "db:printrevo-$ENVIRONMENT-db")
+  db | 'db:printrevo-$ENVIRONMENT-db')
     TF_RESOURCE="aws_db_instance"
     ;;
   subgrp)
@@ -98,7 +98,7 @@ for ARN in $RESOURCE_ARNS; do
   iam)
     TF_RESOURCE="aws_iam_role"
     ;;
-  ec2 | instance)
+  instance)
     TF_RESOURCE="aws_instance"
     ;;
   nodegroup | "nodegroup/printrevo-dev-eks/printrevo-$ENVIRONMENT-eks-node-group" | "printrevo-dev-eks/printrevo-$ENVIRONMENT-eks-node-group" | "printrevo-$ENVIRONMENT-eks-node-group")
