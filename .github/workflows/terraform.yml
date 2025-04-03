@@ -119,9 +119,9 @@ jobs:
             echo "AWS ALB is already installed."
           fi
 
-      - name: Wait for AWS Load Balancer Controller webhook service
-        run: |
-          kubectl wait --namespace kube-system --for=condition=Available deployment/aws-load-balancer-controller --timeout=120s
+      # - name: Wait for AWS Load Balancer Controller webhook service
+      #   run: |
+      #     kubectl wait --namespace kube-system --for=condition=Available deployment/aws-load-balancer-controller --timeout=120s
 
       - name: Helm Install
         run: |
